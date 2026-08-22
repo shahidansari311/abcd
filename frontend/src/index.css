@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Poppins', 'Segoe UI', sans-serif;
+
+  --color-primary: #2e6f40;
+  --color-primary-dark: #253d2c;
+  --color-accent: #68ba7f;
+  --color-tint: #cfffdc;
+  --color-bg: #f7fbf8;
+  --color-surface: #ffffff;
+  --color-line: #d8ecdd;
+  --color-ink: #1b2e20;
+  --color-ink-soft: #4e6b55;
+  --color-warning: #c9a227;
+  --color-error: #b3413b;
+
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  --shadow-card: 0 4px 16px rgba(46, 111, 64, 0.08);
+  --shadow-modal: 0 8px 32px rgba(37, 61, 44, 0.16);
+  --shadow-glass: 0 8px 32px rgba(37, 61, 44, 0.18);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-tint);
+  color: var(--color-primary-dark);
+}
+
+/* Slim, auto-hiding scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: rgba(46, 111, 64, 0.25) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: rgba(46, 111, 64, 0.25);
+  background-clip: content-box;
+}
+
+/* ---------- Glassmorphism system ---------- */
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-dark {
+  background: rgba(37, 61, 44, 0.55);
+  border: 1px solid rgba(207, 255, 220, 0.15);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  color: #f7fbf8;
+}
+
+@media (max-width: 767px) {
+  .glass,
+  .glass-dark {
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+}
+
+/* ---------- Decorative blob drift ---------- */
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(1.08); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-36px, 28px) scale(1.12); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(24px, 34px) scale(0.94); }
+}
+.blob {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Testimonial marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  .blob,
+  .marquee-track {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

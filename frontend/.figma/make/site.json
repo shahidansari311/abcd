@@ -1,0 +1,10 @@
+{
+  "description": "This web application streamlines frontend development by providing intuitive design tools and templates, enabling developers to create responsive user interfaces quickly.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

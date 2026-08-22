@@ -1,0 +1,87 @@
+import {
+  LayoutDashboard,
+  ClipboardCheck,
+  UserCircle,
+  Target,
+  Route,
+  SlidersHorizontal,
+  Briefcase,
+  ListChecks,
+  Wallet,
+  MessageSquare,
+  FileSearch,
+  Users,
+  Trophy,
+  Building2,
+  FilePlus2,
+  FolderKanban,
+  Search,
+  Kanban,
+  Award,
+  ShieldCheck,
+  BarChart3,
+  Compass,
+  Network,
+  FolderGit2,
+  GraduationCap,
+  Grid3x3,
+  TrendingUp,
+  Handshake,
+  FileBarChart,
+} from "lucide-react";
+import type { ReactNode } from "react";
+
+export type NavItem = { label: string; to: string; icon: ReactNode };
+export type RoleKey = "student" | "industry" | "academician" | "institution";
+
+export const roleMeta: Record<RoleKey, { name: string; base: string }> = {
+  student: { name: "Student", base: "/student" },
+  industry: { name: "Industry", base: "/industry" },
+  academician: { name: "Academician", base: "/academician" },
+  institution: { name: "Institution", base: "/institution" },
+};
+
+export const roleNav: Record<RoleKey, NavItem[]> = {
+  student: [
+    { label: "Dashboard", to: "/student", icon: <LayoutDashboard size={18} /> },
+    { label: "Assessment", to: "/student/assessment", icon: <ClipboardCheck size={18} /> },
+    { label: "Skill Profile", to: "/student/skill-profile", icon: <UserCircle size={18} /> },
+    { label: "Skill Gap", to: "/student/skill-gap", icon: <Target size={18} /> },
+    { label: "Career Roadmap", to: "/student/roadmap", icon: <Route size={18} /> },
+    { label: "What-If Simulator", to: "/student/simulator", icon: <SlidersHorizontal size={18} /> },
+    { label: "Opportunities", to: "/student/opportunities", icon: <Briefcase size={18} /> },
+    { label: "Applications", to: "/student/applications", icon: <ListChecks size={18} /> },
+    { label: "Skill Passport", to: "/student/passport", icon: <Wallet size={18} /> },
+    { label: "Mock Interview", to: "/student/mock-interview", icon: <MessageSquare size={18} /> },
+    { label: "Resume Analyzer", to: "/student/resume", icon: <FileSearch size={18} /> },
+    { label: "Mentorship", to: "/student/mentorship", icon: <Users size={18} /> },
+    { label: "Challenges", to: "/student/challenges", icon: <Trophy size={18} /> },
+    { label: "Community", to: "/student/community", icon: <MessageSquare size={18} /> },
+  ],
+  industry: [
+    { label: "Dashboard", to: "/industry", icon: <LayoutDashboard size={18} /> },
+    { label: "Organization", to: "/industry/organization", icon: <Building2 size={18} /> },
+    { label: "Post Opportunity", to: "/industry/post", icon: <FilePlus2 size={18} /> },
+    { label: "Manage Postings", to: "/industry/postings", icon: <FolderKanban size={18} /> },
+    { label: "Candidate Search", to: "/industry/candidates", icon: <Search size={18} /> },
+    { label: "Recruitment Pipeline", to: "/industry/pipeline", icon: <Kanban size={18} /> },
+    { label: "Challenge Evaluation", to: "/industry/challenges", icon: <Award size={18} /> },
+    { label: "Skill Verification", to: "/industry/verification", icon: <ShieldCheck size={18} /> },
+    { label: "Analytics", to: "/industry/analytics", icon: <BarChart3 size={18} /> },
+  ],
+  academician: [
+    { label: "Dashboard", to: "/academician", icon: <LayoutDashboard size={18} /> },
+    { label: "Profile", to: "/academician/profile", icon: <UserCircle size={18} /> },
+    { label: "Opportunity Discovery", to: "/academician/discovery", icon: <Compass size={18} /> },
+    { label: "Collaboration Hub", to: "/academician/collaboration", icon: <Network size={18} /> },
+    { label: "Portfolio", to: "/academician/portfolio", icon: <FolderGit2 size={18} /> },
+  ],
+  institution: [
+    { label: "Dashboard", to: "/institution", icon: <LayoutDashboard size={18} /> },
+    { label: "Student Overview", to: "/institution/students", icon: <GraduationCap size={18} /> },
+    { label: "Department Heatmap", to: "/institution/heatmap", icon: <Grid3x3 size={18} /> },
+    { label: "Placement Analytics", to: "/institution/placements", icon: <TrendingUp size={18} /> },
+    { label: "Industry Partners", to: "/institution/partners", icon: <Handshake size={18} /> },
+    { label: "Reports", to: "/institution/reports", icon: <FileBarChart size={18} /> },
+  ],
+};
