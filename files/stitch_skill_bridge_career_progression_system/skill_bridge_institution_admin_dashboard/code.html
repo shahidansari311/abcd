@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Institutional Command Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Basic&display=swap');
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-container": "#8a918e",
+                      "surface-container-low": "#f6f3f0",
+                      "secondary-container": "#d8e2db",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#c0c9c2",
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#f3f0ed",
+                      "surface-dim": "#dcd9d7",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#c0c9c2",
+                      "error-container": "#ffdad6",
+                      "tertiary-container": "#232a28",
+                      "on-secondary-fixed-variant": "#3f4944",
+                      "surface": "#fcf9f6",
+                      "on-primary-fixed": "#151d1a",
+                      "secondary-fixed": "#dbe5de",
+                      "secondary-fixed-dim": "#bfc9c2",
+                      "tertiary-fixed": "#dde4e1",
+                      "surface-variant": "#e5e2df",
+                      "on-tertiary-fixed": "#161d1b",
+                      "outline-variant": "#c3c7c3",
+                      "surface-container": "#f0edea",
+                      "on-secondary-fixed": "#141d19",
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#434845",
+                      "secondary": "#57615b",
+                      "inverse-surface": "#31302f",
+                      "outline": "#747875",
+                      "surface-tint": "#58605b",
+                      "surface-container-high": "#ebe8e5",
+                      "on-primary-container": "#89918c",
+                      "primary-fixed": "#dce5de",
+                      "on-primary-fixed-variant": "#404944",
+                      "tertiary": "#0f1514",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#e5e2df",
+                      "on-surface": "#1c1c1a",
+                      "on-primary": "#ffffff",
+                      "on-secondary-container": "#5b655f",
+                      "on-background": "#1c1c1a",
+                      "primary-container": "#222a26",
+                      "error": "#ba1a1a",
+                      "primary": "#0e1512",
+                      "surface-bright": "#fcf9f6",
+                      "tertiary-fixed-dim": "#c1c8c5",
+                      "background": "#fcf9f6",
+                      "on-tertiary-fixed-variant": "#414846"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "40px",
+                      "gutter": "24px",
+                      "unit": "8px",
+                      "container-max": "1440px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg": [
+                              "Basic"
+                      ],
+                      "body-md": [
+                              "Basic"
+                      ],
+                      "headline-lg-mobile": [
+                              "Basic"
+                      ],
+                      "display-xl": [
+                              "Basic"
+                      ],
+                      "label-sm": [
+                              "Basic"
+                      ],
+                      "title-md": [
+                              "Basic"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-xl": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Premium Glassmorphism & HUD Specifics */
+        .glass-panel {
+            background: rgba(246, 243, 240, 0.4);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(164, 171, 168, 0.3);
+        }
+        
+        .hud-glow:focus-within, .hud-glow:hover {
+            box-shadow: 0 0 32px rgba(164, 171, 168, 0.4);
+        }
+
+        .the-thread {
+            position: absolute;
+            width: 1.5px;
+            background-color: rgba(164, 171, 168, 0.4);
+            z-index: 0;
+        }
+
+        .thread-vertical {
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .thread-horizontal {
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* SVG Circular Gauge Animation */
+        .gauge-circle {
+            transition: stroke-dashoffset 1s ease-out;
+        }
+        
+        body {
+            background-color: #EFECE9; /* Level 0 Base Background */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md overflow-x-hidden">
+<!-- TopNavBar (Hidden on Mobile, flex on md+) -->
+<nav class="hidden md:flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto bg-surface/30 backdrop-blur-xl dark:bg-primary/30 fixed top-0 w-full z-50 border-b border-outline-variant/30 shadow-none">
+<div class="font-headline-lg text-headline-lg font-black tracking-tighter text-on-surface dark:text-primary-fixed-dim">
+            Skill Bridge
+        </div>
+<div class="flex gap-8 items-center">
+<a class="text-on-surface-variant/70 dark:text-on-primary-container/70 hover:text-on-surface dark:hover:text-primary-fixed-dim transition-colors duration-300 font-label-sm text-label-sm" href="#">Quests</a>
+<a class="bg-on-primary-container/10 text-on-surface dark:text-primary-fixed-dim border-b-2 border-on-surface dark:border-primary-fixed-dim pb-1 font-label-sm text-label-sm scale-95 transition-transform duration-200" href="#">Mastery</a>
+<a class="text-on-surface-variant/70 dark:text-on-primary-container/70 hover:text-on-surface dark:hover:text-primary-fixed-dim transition-colors duration-300 font-label-sm text-label-sm" href="#">Network</a>
+<a class="text-on-surface-variant/70 dark:text-on-primary-container/70 hover:text-on-surface dark:hover:text-primary-fixed-dim transition-colors duration-300 font-label-sm text-label-sm" href="#">Intel</a>
+</div>
+<div>
+<button class="bg-primary-container text-surface-container-lowest px-6 py-2 rounded-DEFAULT font-label-sm text-label-sm hover:shadow-[0_0_32px_rgba(164,171,168,0.4)] transition-shadow">Launch Command</button>
+</div>
+</nav>
+<!-- SideNavBar (Mobile hidden, md+ visible) -->
+<aside class="hidden md:flex flex-col h-full py-8 px-4 bg-surface-container-low/50 backdrop-blur-lg dark:bg-primary-container/50 h-screen w-64 fixed left-0 top-0 z-40 border-r border-outline-variant/30 shadow-none pt-24">
+<!-- Offset for top nav -->
+<div class="mb-8 px-4">
+<img alt="User Profile HUD" class="w-16 h-16 rounded-full border border-outline-variant/30 object-cover mb-4" data-alt="A highly detailed close up portrait of an academic administrator looking determined and focused, lit with high-key soft studio lighting, creating a premium light-mode tech aesthetic against a stark white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt0eKkmm-1eClRpcdQNMqzLU-DBZ6LxHOcLyhIz2uhKLPcHlaAq-2fogH6rIot2marUsA7qgp9kGMdcBKWwQ0dxNohZlGpBE2yRdlfbBF8GmljKd2e8zkTjix4pL78Ko4RmBmnOmCMvF_L2wUyCW2X4KeVI86h_3JfKPRQtdubDVvXAPkHVBzzvz_Ji1PUEl5fO4mTNuOrl_q1XcJ7ku2uFpjc76XNEaSjN7TXa0sAXIekqBldeZ8e"/>
+<h2 class="font-title-md text-title-md text-on-surface dark:text-primary-fixed-dim">Commander</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70">Level 42 Architect</p>
+</div>
+<button class="mx-4 mb-8 bg-primary-container text-surface-container-lowest py-3 rounded-DEFAULT font-label-sm text-label-sm text-center hover:shadow-[0_0_32px_rgba(164,171,168,0.4)] transition-shadow">
+            New Quest
+        </button>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="bg-on-primary-container/10 text-on-surface dark:text-primary-fixed-dim border-l-4 border-on-surface dark:border-primary-fixed-dim px-4 py-3 flex items-center gap-3 translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200 px-4 py-3 flex items-center gap-3 border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">route</span>
+<span class="font-label-sm text-label-sm">Roadmap</span>
+</a>
+<a class="text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200 px-4 py-3 flex items-center gap-3 border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">psychology</span>
+<span class="font-label-sm text-label-sm">Skills</span>
+</a>
+<a class="text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200 px-4 py-3 flex items-center gap-3 border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">work</span>
+<span class="font-label-sm text-label-sm">Opportunities</span>
+</a>
+<a class="text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200 px-4 py-3 flex items-center gap-3 border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-2">
+<a class="text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200 px-4 py-3 flex items-center gap-3 border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200 px-4 py-3 flex items-center gap-3 border-l-4 border-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span>
+<span class="font-label-sm text-label-sm">Logs</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-24 md:pl-64 min-h-screen flex flex-col max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-32 relative">
+<!-- Background elements for depth -->
+<div class="absolute inset-0 z-[-1] opacity-30 pointer-events-none" style="background-image: radial-gradient(#c3c7c3 1px, transparent 1px); background-size: 24px 24px;"></div>
+<header class="mb-gutter relative z-10">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Institutional Readiness</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Global aggregate data. System nominal.</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter relative z-10">
+<!-- Global Thread underlay for the grid -->
+<div class="absolute inset-0 pointer-events-none z-[-1] hidden md:block">
+<div class="the-thread thread-vertical" style="left: 33%;"></div>
+<div class="the-thread thread-vertical" style="left: 66%;"></div>
+<div class="the-thread thread-horizontal" style="top: 50%;"></div>
+</div>
+<!-- HUD Stat Tile 1: Readiness Score -->
+<div class="glass-panel p-8 rounded-lg col-span-1 md:col-span-4 hud-glow flex flex-col items-center justify-center relative">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-6 uppercase tracking-widest text-center w-full">Aggregate Readiness</h3>
+<div class="relative w-40 h-40 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 120 120">
+<circle cx="60" cy="60" fill="none" r="54" stroke="rgba(220, 217, 215, 0.5)" stroke-width="6"></circle>
+<circle class="gauge-circle" cx="60" cy="60" fill="none" r="54" stroke="#222A26" stroke-dasharray="339.29" stroke-dashoffset="67.85" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-display-xl text-display-xl text-on-surface">80</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">%</span>
+</div>
+</div>
+</div>
+<!-- HUD Stat Tile 2: Internship Participation -->
+<div class="glass-panel p-8 rounded-lg col-span-1 md:col-span-4 hud-glow flex flex-col justify-between">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-4 uppercase tracking-widest">Active Placements</h3>
+<div>
+<div class="font-display-xl text-display-xl text-on-surface mb-2">3,492</div>
+<p class="font-body-md text-body-md text-on-surface-variant">+12% from previous cycle</p>
+</div>
+<div class="mt-8">
+<div class="flex justify-between font-label-sm text-label-sm mb-2 text-on-surface-variant">
+<span>Target: 4000</span>
+<span>87%</span>
+</div>
+<div class="h-2 w-full bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[87%] relative">
+<div class="absolute right-0 top-0 bottom-0 w-4 bg-white/50 blur-sm"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- HUD Stat Tile 3: Certifications -->
+<div class="glass-panel p-8 rounded-lg col-span-1 md:col-span-4 hud-glow flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Certifications</h3>
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface">
+<span>AWS Cloud Practitioner</span>
+<span>420</span>
+</div>
+<div class="h-1 w-full bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-outline w-[70%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface">
+<span>Google Data Analytics</span>
+<span>385</span>
+</div>
+<div class="h-1 w-full bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-outline w-[65%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface">
+<span>CompTIA Security+</span>
+<span>210</span>
+</div>
+<div class="h-1 w-full bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-outline w-[40%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Department Heatmap Preview (Wide) -->
+<div class="glass-panel p-8 rounded-lg col-span-1 md:col-span-12 hud-glow relative overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Department Skill Heatmap</h3>
+<button class="font-label-sm text-label-sm text-primary-container border-b border-primary-container pb-0.5 hover:text-on-surface-variant transition-colors">Expand View</button>
+</div>
+<div class="grid grid-cols-4 gap-4">
+<!-- Column Headers -->
+<div class="col-span-1 font-label-sm text-label-sm text-on-surface-variant py-2 border-b-1.5 border-outline-variant/30">Dept</div>
+<div class="col-span-1 font-label-sm text-label-sm text-on-surface-variant py-2 border-b-1.5 border-outline-variant/30 text-center">Tech Proficiency</div>
+<div class="col-span-1 font-label-sm text-label-sm text-on-surface-variant py-2 border-b-1.5 border-outline-variant/30 text-center">Soft Skills</div>
+<div class="col-span-1 font-label-sm text-label-sm text-on-surface-variant py-2 border-b-1.5 border-outline-variant/30 text-center">Industry Tools</div>
+<!-- Row 1 -->
+<div class="col-span-1 font-body-md text-body-md text-on-surface py-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">memory</span>
+                        Engineering
+                    </div>
+<div class="col-span-1 p-3 bg-primary-container/90 text-surface-container-lowest font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">High (92%)</div>
+<div class="col-span-1 p-3 bg-primary-container/40 text-on-surface font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">Mid (68%)</div>
+<div class="col-span-1 p-3 bg-primary-container/80 text-surface-container-lowest font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">High (85%)</div>
+<!-- Row 2 -->
+<div class="col-span-1 font-body-md text-body-md text-on-surface py-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">storefront</span>
+                        Business
+                    </div>
+<div class="col-span-1 p-3 bg-primary-container/50 text-on-surface font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">Mid (70%)</div>
+<div class="col-span-1 p-3 bg-primary-container/90 text-surface-container-lowest font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">High (89%)</div>
+<div class="col-span-1 p-3 bg-primary-container/60 text-on-surface font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">Mid (75%)</div>
+<!-- Row 3 -->
+<div class="col-span-1 font-body-md text-body-md text-on-surface py-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">brush</span>
+                        Design
+                    </div>
+<div class="col-span-1 p-3 bg-primary-container/60 text-on-surface font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">Mid (72%)</div>
+<div class="col-span-1 p-3 bg-primary-container/80 text-surface-container-lowest font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">High (84%)</div>
+<div class="col-span-1 p-3 bg-primary-container/90 text-surface-container-lowest font-label-sm text-label-sm text-center flex items-center justify-center rounded-sm">High (95%)</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-tertiary-container dark:bg-primary text-on-tertiary-container dark:text-on-primary-container relative bottom-0 w-full border-t border-outline-variant/10 shadow-none z-50">
+<div class="w-full py-12 px-margin-desktop flex flex-col items-center gap-4 text-center">
+<div class="font-headline-lg text-headline-lg text-on-primary-container">
+                Skill Bridge
+            </div>
+<div class="flex gap-6">
+<a class="text-on-tertiary-container/50 dark:text-on-primary-container/50 hover:text-on-surface dark:hover:text-primary-fixed-dim transition-colors font-label-sm text-label-sm" href="#">Privacy Protocol</a>
+<a class="text-on-tertiary-container/50 dark:text-on-primary-container/50 hover:text-on-surface dark:hover:text-primary-fixed-dim transition-colors font-label-sm text-label-sm" href="#">Terms of Engagement</a>
+<a class="text-on-tertiary-container/50 dark:text-on-primary-container/50 hover:text-on-surface dark:hover:text-primary-fixed-dim transition-colors font-label-sm text-label-sm" href="#">System Status</a>
+</div>
+<p class="font-label-sm text-label-sm mt-4 text-on-tertiary-container/50">
+                © 2024 SKILL BRIDGE TERMINAL. ALL SYSTEMS OPERATIONAL.
+            </p>
+</div>
+</footer>
+</body></html>

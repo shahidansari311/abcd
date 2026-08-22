@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Skill Bridge - Student Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Basic&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#161d1b",
+                        "on-secondary-fixed-variant": "#3f4944",
+                        "on-secondary-fixed": "#141d19",
+                        "on-tertiary-container": "#8a918e",
+                        "tertiary-fixed-dim": "#c1c8c5",
+                        "on-secondary": "#ffffff",
+                        "primary": "#0e1512",
+                        "primary-fixed-dim": "#c0c9c2",
+                        "surface-container-highest": "#e5e2df",
+                        "surface-bright": "#fcf9f6",
+                        "surface-variant": "#e5e2df",
+                        "background": "#fcf9f6",
+                        "tertiary-fixed": "#dde4e1",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#fcf9f6",
+                        "outline-variant": "#c3c7c3",
+                        "secondary-fixed": "#dbe5de",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#232a28",
+                        "surface-container-high": "#ebe8e5",
+                        "on-error": "#ffffff",
+                        "outline": "#747875",
+                        "on-secondary-container": "#5b655f",
+                        "inverse-surface": "#31302f",
+                        "primary-container": "#222a26",
+                        "on-primary-container": "#89918c",
+                        "on-tertiary-fixed-variant": "#414846",
+                        "secondary": "#57615b",
+                        "surface-container-low": "#f6f3f0",
+                        "on-surface-variant": "#434845",
+                        "inverse-on-surface": "#f3f0ed",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dce5de",
+                        "inverse-primary": "#c0c9c2",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1c1c1a",
+                        "on-primary-fixed": "#151d1a",
+                        "on-primary-fixed-variant": "#404944",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface-container": "#f0edea",
+                        "tertiary": "#0f1514",
+                        "surface-dim": "#dcd9d7",
+                        "on-surface": "#1c1c1a",
+                        "secondary-fixed-dim": "#bfc9c2",
+                        "secondary-container": "#d8e2db",
+                        "surface-tint": "#58605b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "gutter": "24px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Basic"],
+                        "display-xl": ["Basic"],
+                        "headline-lg": ["Basic"],
+                        "title-md": ["Basic"],
+                        "body-md": ["Basic"],
+                        "label-sm": ["Basic"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "display-xl": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "title-md": ["24px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(252, 249, 246, 0.7);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(164, 171, 168, 0.3);
+        }
+        .glass-panel-dark {
+            background: rgba(34, 42, 38, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(164, 171, 168, 0.2);
+        }
+        .glow-active {
+            box-shadow: 0 0 32px rgba(164, 171, 168, 0.4);
+        }
+        .glow-border {
+            border-color: rgba(164, 171, 168, 0.8) !important;
+            box-shadow: inset 0 0 10px rgba(164, 171, 168, 0.2), 0 0 10px rgba(164, 171, 168, 0.2);
+        }
+        
+        /* The Thread */
+        .thread-vertical {
+            width: 1.5px;
+            background-color: rgba(164, 171, 168, 0.5);
+            margin: 0 auto;
+        }
+        .thread-horizontal {
+            height: 1.5px;
+            background-color: rgba(164, 171, 168, 0.5);
+        }
+        
+        /* Progress SVG animations */
+        .circle-progress {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1.5s ease-out;
+        }
+
+        /* Base setup */
+        body {
+            background-color: #EFECE9; /* Base level 0 from design guidance */
+            color: #1c1c1a;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md bg-background antialiased min-h-screen flex flex-col md:flex-row relative">
+<!-- TopNavBar (Mobile) / Hidden on Desktop based on JSON logic -->
+<nav class="md:hidden fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-xl dark:bg-primary/30 border-b border-outline-variant/30 shadow-none">
+<div class="flex justify-between items-center px-margin-mobile py-4 max-w-container-max mx-auto">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-black tracking-tighter text-on-surface dark:text-primary-fixed-dim">Skill Bridge</span>
+<span class="material-symbols-outlined text-on-surface">menu</span>
+</div>
+</nav>
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-40 bg-surface-container-low/50 backdrop-blur-lg dark:bg-primary-container/50 border-r border-outline-variant/30 shadow-none py-8 px-4">
+<div class="mb-8 px-2">
+<h1 class="font-headline-lg text-headline-lg text-on-surface dark:text-primary-fixed-dim font-black tracking-tighter">Skill Bridge</h1>
+</div>
+<div class="flex items-center gap-3 mb-8 px-2 p-3 glass-panel rounded-xl">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden">
+<img alt="User Profile HUD" class="w-full h-full object-cover" data-alt="A futuristic minimalist avatar placeholder featuring abstract geometric patterns in light grey and white tones, soft studio lighting, ultra-clean aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVyXHATVAk5HhPLQryZ37hqWpi_zXeIKXI3YjnDXboEGo3EZAVrog75TfhRyABUKNQQ2clFkYdSvrJ2WdlaDciI8gQn-PwQrgwopJVuVDX1sMuYUu_L3JF0HM-7qN_-uHJcH8ljg_V_yv5tHGIQoSvL9dghtjhq-pLLZep_mHGIjWrbZI3Jo5NMhG-2a3Jff83TmvMhsCBhncQaDl-QyPN-ZFl4LznAxMmAqvAdKgJ9o4sriu1Y8of"/>
+</div>
+<div>
+<div class="font-title-md text-title-md text-on-surface dark:text-primary-fixed-dim leading-none">Commander</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant/60 dark:text-on-primary-container/60 mt-1">Level 42 Architect</div>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-on-primary-container/10 text-on-surface dark:text-primary-fixed-dim border-l-4 border-on-surface dark:border-primary-fixed-dim transition-all duration-200 translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">route</span>
+<span class="font-label-sm text-label-sm">Roadmap</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-sm text-label-sm">Skills</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-sm text-label-sm">Opportunities</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant/60 dark:text-on-primary-container/60 hover:bg-on-primary-container/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</nav>
+<button class="w-full mt-auto mb-4 py-3 bg-primary-container text-on-secondary rounded-lg font-label-sm text-label-sm hover:glow-active transition-all duration-300">New Quest</button>
+<div class="mt-4 pt-4 border-t border-outline-variant/30 space-y-2">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant/60 hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span class="font-label-sm text-label-sm">Logs</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 pt-20 md:pt-8 px-margin-mobile md:px-margin-desktop pb-24 max-w-container-max mx-auto w-full flex flex-col gap-gutter">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
+<div>
+<h2 class="font-display-xl text-headline-lg-mobile md:text-display-xl text-on-surface leading-tight">Command Center</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-2xl">Monitor your skill acquisition telemetry and active quest logs.</p>
+</div>
+<div class="flex items-center gap-2 glass-panel px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-outline">info</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Guidance, not guarantee</span>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter auto-rows-min">
+<!-- Readiness Score (Left, Span 4) -->
+<section class="col-span-1 md:col-span-4 glass-panel rounded-2xl p-[32px] flex flex-col items-center justify-center relative min-h-[350px]">
+<h3 class="font-title-md text-title-md text-on-surface mb-6 w-full text-center">Placement Readiness</h3>
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="w-full h-full absolute inset-0" viewbox="0 0 100 100">
+<!-- Background Ring -->
+<circle cx="50" cy="50" fill="none" r="45" stroke="rgba(164, 171, 168, 0.2)" stroke-width="4"></circle>
+<!-- Progress Ring -->
+<circle class="circle-progress" cx="50" cy="50" fill="none" id="readiness-ring" r="45" stroke="#222A26" stroke-dasharray="282.7" stroke-dashoffset="282.7" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<div class="flex flex-col items-center justify-center z-10 bg-surface/80 rounded-full w-32 h-32 backdrop-blur-sm border border-outline-variant/20 shadow-sm">
+<span class="font-display-xl text-headline-lg md:text-display-xl text-on-surface leading-none" id="readiness-score">0</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">%</span>
+</div>
+</div>
+<div class="mt-6 flex items-center gap-2 text-on-surface-variant/80">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="font-label-sm text-label-sm">+4% since last cycle</span>
+</div>
+</section>
+<!-- Skill Profile (Right, Span 8) -->
+<section class="col-span-1 md:col-span-8 glass-panel rounded-2xl p-[32px] flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-title-md text-title-md text-on-surface">Character Sheet</h3>
+<button class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1">
+                         View Details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+<!-- Skill Item 1 (Verified) -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider">Frontend Arch</span>
+<span class="material-symbols-outlined text-[14px] text-primary" title="Verified Badge">verified</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lvl 8</span>
+</div>
+<div class="h-2 w-full bg-primary-container/10 rounded-full overflow-hidden glow-border">
+<div class="h-full bg-primary-container w-[80%] rounded-full relative">
+<div class="absolute right-0 top-0 bottom-0 w-4 bg-white/30 blur-[2px]"></div>
+</div>
+</div>
+</div>
+<!-- Skill Item 2 (Claimed) -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider">Data Structs</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lvl 5</span>
+</div>
+<div class="h-2 w-full bg-primary-container/10 rounded-full overflow-hidden">
+<div class="h-full bg-outline w-[50%] rounded-full"></div>
+</div>
+</div>
+<!-- Skill Item 3 (Verified) -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider">Sys Design</span>
+<span class="material-symbols-outlined text-[14px] text-primary" title="Verified Badge">verified</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lvl 6</span>
+</div>
+<div class="h-2 w-full bg-primary-container/10 rounded-full overflow-hidden glow-border">
+<div class="h-full bg-primary-container w-[60%] rounded-full relative">
+<div class="absolute right-0 top-0 bottom-0 w-4 bg-white/30 blur-[2px]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quest Log (Full Width, Span 12) -->
+<section class="col-span-1 md:col-span-12 glass-panel rounded-2xl p-[32px] overflow-hidden">
+<h3 class="font-title-md text-title-md text-on-surface mb-8">Active Quest Log</h3>
+<div class="relative pt-4 pb-8 w-full overflow-x-auto hide-scrollbar">
+<!-- The Thread Horizontal -->
+<div class="absolute top-[40px] left-8 right-8 thread-horizontal -z-10 min-w-[800px]"></div>
+<div class="flex justify-between items-start min-w-[800px] px-8">
+<!-- Node 1: Completed -->
+<div class="flex flex-col items-center gap-4 w-48 relative">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary flex items-center justify-center glow-active z-10 border-2 border-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="text-center glass-panel px-4 py-3 rounded-xl w-full border-b-2 border-primary-container">
+<div class="font-label-sm text-label-sm text-on-surface uppercase mb-1">Module 1</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">React Fundamentals</div>
+</div>
+</div>
+<!-- Node 2: Active -->
+<div class="flex flex-col items-center gap-4 w-48 relative">
+<div class="w-16 h-16 -mt-2 rounded-full bg-surface glass-panel flex items-center justify-center glow-border z-10 border-4 border-surface shadow-lg">
+<span class="material-symbols-outlined text-primary text-[28px]">code</span>
+</div>
+<div class="text-center glass-panel-dark px-4 py-3 rounded-xl w-full glow-active transform scale-105">
+<div class="font-label-sm text-label-sm text-on-primary-container uppercase mb-1">Current Objective</div>
+<div class="font-body-md text-body-md text-on-secondary text-sm">State Management UI</div>
+</div>
+</div>
+<!-- Node 3: Locked -->
+<div class="flex flex-col items-center gap-4 w-48 relative opacity-50">
+<div class="w-12 h-12 rounded-full bg-surface-variant border border-outline flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<div class="text-center bg-surface/50 px-4 py-3 rounded-xl w-full border border-outline-variant/30">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">Module 3</div>
+<div class="font-body-md text-body-md text-outline text-sm">Next.js Routing</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Count up animation for the Readiness Score
+        document.addEventListener('DOMContentLoaded', () => {
+            const targetScore = 84;
+            const duration = 2000; // ms
+            const scoreElement = document.getElementById('readiness-score');
+            const ringElement = document.getElementById('readiness-ring');
+            
+            // Animate SVG Ring
+            const circumference = 2 * Math.PI * 45; // r=45
+            const offset = circumference - (targetScore / 100) * circumference;
+            
+            setTimeout(() => {
+                ringElement.style.strokeDashoffset = offset;
+            }, 100);
+
+            // Animate Number
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                
+                // Ease out quad
+                const easeOut = progress * (2 - progress);
+                const currentScore = Math.floor(easeOut * targetScore);
+                
+                scoreElement.innerText = currentScore;
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    scoreElement.innerText = targetScore;
+                }
+            };
+            window.requestAnimationFrame(step);
+        });
+    </script>
+</body></html>

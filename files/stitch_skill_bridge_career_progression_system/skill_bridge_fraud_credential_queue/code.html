@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fraud &amp; Credential Verification Queue - Skill Bridge Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Basic&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-container": "#8a918e",
+                      "surface-container-low": "#f6f3f0",
+                      "secondary-container": "#d8e2db",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#c0c9c2",
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#f3f0ed",
+                      "surface-dim": "#dcd9d7",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#c0c9c2",
+                      "error-container": "#ffdad6",
+                      "tertiary-container": "#232a28",
+                      "on-secondary-fixed-variant": "#3f4944",
+                      "surface": "#fcf9f6",
+                      "on-primary-fixed": "#151d1a",
+                      "secondary-fixed": "#dbe5de",
+                      "secondary-fixed-dim": "#bfc9c2",
+                      "tertiary-fixed": "#dde4e1",
+                      "surface-variant": "#e5e2df",
+                      "on-tertiary-fixed": "#161d1b",
+                      "outline-variant": "#c3c7c3",
+                      "surface-container": "#f0edea",
+                      "on-secondary-fixed": "#141d19",
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#434845",
+                      "secondary": "#57615b",
+                      "inverse-surface": "#31302f",
+                      "outline": "#747875",
+                      "surface-tint": "#58605b",
+                      "surface-container-high": "#ebe8e5",
+                      "on-primary-container": "#89918c",
+                      "primary-fixed": "#dce5de",
+                      "on-primary-fixed-variant": "#404944",
+                      "tertiary": "#0f1514",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#e5e2df",
+                      "on-surface": "#1c1c1a",
+                      "on-primary": "#ffffff",
+                      "on-secondary-container": "#5b655f",
+                      "on-background": "#1c1c1a",
+                      "primary-container": "#222a26",
+                      "error": "#ba1a1a",
+                      "primary": "#0e1512",
+                      "surface-bright": "#fcf9f6",
+                      "tertiary-fixed-dim": "#c1c8c5",
+                      "background": "#fcf9f6",
+                      "on-tertiary-fixed-variant": "#414846"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "40px",
+                      "gutter": "24px",
+                      "unit": "8px",
+                      "container-max": "1440px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Basic"],
+                      "body-md": ["Basic"],
+                      "headline-lg-mobile": ["Basic"],
+                      "display-xl": ["Basic"],
+                      "label-sm": ["Basic"],
+                      "title-md": ["Basic"]
+              },
+              "fontSize": {
+                      "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                      "display-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "400"}],
+                      "title-md": ["24px", {"lineHeight": "1.4", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .thread-line-v {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1.5px;
+            background-color: theme('colors.outline');
+            opacity: 0.3;
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+        .thread-line-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1.5px;
+            background-color: theme('colors.outline');
+            opacity: 0.3;
+            transform: translateY(-50%);
+            z-index: -1;
+        }
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(164, 171, 168, 0.3);
+        }
+        .glow-active {
+            box-shadow: 0 0 32px rgba(164, 171, 168, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="bg-surface/30 backdrop-blur-lg fixed top-0 w-full z-50 border-b border-outline/30 shadow-[0_0_32px_rgba(164,171,168,0.2)]">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto hidden md:flex">
+<div class="font-headline-lg text-headline-lg tracking-tighter text-primary dark:text-primary-fixed">Skill Bridge</div>
+<nav class="flex gap-6">
+<!-- Navigation Items omitted for procedural context -->
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:text-primary transition-colors duration-300" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:text-primary transition-colors duration-300" data-icon="settings">settings</span>
+<img alt="User Mastery Avatar" class="w-10 h-10 rounded-full border border-outline/30 object-cover" data-alt="A small, circular avatar image of a professional user profile in a clean, modern style. The background is subtle and the lighting is high-key, fitting a premium dashboard interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4w9mpd5rA_t87jClUipwfrODQet6kOg1aHXB10rot2agZBVwQh6-krkl3puWKV5uq2-IT9qxc1MBmNyaLtHkem6NN-CVyFkcXi6coO7JA7m4rkFsGVLJZlcMybqLzdZz_omafYcu4IODviqXIEYnUXhGtedQFbRJztEgGb9U7aq0NoK4Ayvzpma9OzSpPhJeqyhCIrYKNaF0nXNUlHuN5yuCs0JYKwqip2qnK1bG-B04RZcClQJec"/>
+</div>
+</div>
+</header>
+<div class="flex flex-1 pt-[80px]"> <!-- Compensate for fixed top nav -->
+<!-- Main Content -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto w-full flex flex-col gap-gutter">
+<div class="flex flex-col gap-2 mb-4">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">Verification Queue</h1>
+<p class="text-on-surface-variant font-body-md text-body-md max-w-2xl">Procedural review of flagged credential assertions. Adhere to institutional verification protocols before finalizing claim status.</p>
+</div>
+<!-- Dashboard Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter relative">
+<div class="thread-line-h hidden md:block"></div>
+<!-- Stat Card 1 -->
+<div class="glass-panel p-8 rounded-lg flex flex-col gap-2 relative bg-surface-container-lowest/50">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Pending Review</span>
+<span class="font-display-xl text-display-xl text-primary">24</span>
+</div>
+<!-- Stat Card 2 -->
+<div class="glass-panel p-8 rounded-lg flex flex-col gap-2 relative bg-error-container/20 border-error/30 glow-active">
+<span class="font-label-sm text-label-sm text-error uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[16px]" data-icon="warning">warning</span>
+                        High Priority Flags
+                    </span>
+<span class="font-display-xl text-display-xl text-error">7</span>
+</div>
+<!-- Stat Card 3 -->
+<div class="glass-panel p-8 rounded-lg flex flex-col gap-2 relative bg-surface-container-lowest/50">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Processed Today</span>
+<span class="font-display-xl text-display-xl text-primary">112</span>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="glass-panel rounded-lg mt-8 flex flex-col bg-surface-container-lowest/60">
+<div class="p-6 border-b border-outline/30 flex justify-between items-center">
+<h2 class="font-title-md text-title-md text-primary">Active Flags</h2>
+<div class="flex gap-4">
+<button class="bg-surface-container border border-outline/30 px-4 py-2 font-label-sm text-label-sm text-primary hover:bg-surface-container-high transition-colors">FILTER</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline/20 bg-surface-container/30">
+<th class="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Claim ID</th>
+<th class="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Issuer</th>
+<th class="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Subject</th>
+<th class="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Flag Reason</th>
+<th class="p-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<!-- Row 1 -->
+<tr class="border-b border-outline/10 hover:bg-surface-container/20 transition-colors">
+<td class="p-4 text-secondary font-mono text-sm">#C-8821-X</td>
+<td class="p-4 text-primary">Global Tech Inst.</td>
+<td class="p-4 text-on-surface-variant">Data Eng. Lvl 3</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 bg-error-container/50 text-on-error-container px-2 py-1 rounded-sm text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+                                        Trusted-Issuer Mismatch
+                                    </span>
+</td>
+<td class="p-4 text-right flex justify-end gap-2">
+<button class="px-4 py-2 bg-primary-container text-on-primary font-label-sm text-label-sm hover:shadow-[0_0_16px_rgba(164,171,168,0.4)] transition-all">APPROVE</button>
+<button class="px-4 py-2 bg-surface border border-outline/50 text-error font-label-sm text-label-sm hover:bg-error-container transition-all">REJECT</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-outline/10 hover:bg-surface-container/20 transition-colors bg-error-container/5">
+<td class="p-4 text-secondary font-mono text-sm">#C-8822-Y</td>
+<td class="p-4 text-primary">Unknown Source</td>
+<td class="p-4 text-on-surface-variant">Cloud Arch. Pro</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 bg-error-container text-on-error-container px-2 py-1 rounded-sm text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                                        Signature Invalid
+                                    </span>
+</td>
+<td class="p-4 text-right flex justify-end gap-2">
+<button class="px-4 py-2 bg-primary-container text-on-primary font-label-sm text-label-sm hover:shadow-[0_0_16px_rgba(164,171,168,0.4)] transition-all">APPROVE</button>
+<button class="px-4 py-2 bg-surface border border-outline/50 text-error font-label-sm text-label-sm hover:bg-error-container transition-all">REJECT</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container/20 transition-colors">
+<td class="p-4 text-secondary font-mono text-sm">#C-8823-Z</td>
+<td class="p-4 text-primary">State University</td>
+<td class="p-4 text-on-surface-variant">B.S. Comp Sci</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 bg-surface-variant text-on-surface-variant px-2 py-1 rounded-sm text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                        Timestamp Anomaly
+                                    </span>
+</td>
+<td class="p-4 text-right flex justify-end gap-2">
+<button class="px-4 py-2 bg-primary-container text-on-primary font-label-sm text-label-sm hover:shadow-[0_0_16px_rgba(164,171,168,0.4)] transition-all">APPROVE</button>
+<button class="px-4 py-2 bg-surface border border-outline/50 text-error font-label-sm text-label-sm hover:bg-error-container transition-all">REJECT</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest w-full py-8 mt-auto border-t-[1.5px] border-outline/20">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto gap-4">
+<div class="font-title-md text-title-md text-primary">Skill Bridge</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">© 2024 Skill Bridge Terminal. Guidance, not guarantee.</div>
+<div class="flex gap-4 font-label-sm text-label-sm">
+<a class="text-on-surface-variant hover:text-primary underline decoration-outline/50 transition-opacity hover:opacity-80" href="#">Terms of Mastery</a>
+<a class="text-on-surface-variant hover:text-primary underline decoration-outline/50 transition-opacity hover:opacity-80" href="#">Privacy Protocol</a>
+<a class="text-on-surface-variant hover:text-primary underline decoration-outline/50 transition-opacity hover:opacity-80" href="#">System Status</a>
+</div>
+</div>
+</footer>
+</body></html>

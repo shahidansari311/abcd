@@ -1,10 +1,22 @@
 require('dotenv').config();
 const http = require('http');
 const app = require('./app');
+const env = require('./config/env');
+const connectDB = require('./config/db');
+const logger = require('./config/logger');
+const { initSocket } = require('./socket');
 
-const PORT = process.env.PORT || 5000;
-const server = http.createServer(app);
+const startServer = async () => {
+  await connectDB();
+  
+  const server = http.createServer(app);
+  
+  // Initialize Socket.io
+  initSocket(server);
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  server.listen(env.port, () => {
+    logger.info(`Server running on port ${env.port} in ${env.nodeEnv} mode`);
+  });
+};
+
+startServer();
