@@ -19,6 +19,7 @@ import Notifications from "./pages/shared/Notifications";
 // Student
 import SDashboard from "./pages/student/Dashboard";
 import SAssessment from "./pages/student/Assessment";
+import SProfile from "./pages/student/Profile";
 import SSkillProfile from "./pages/student/SkillProfile";
 import SSkillGap from "./pages/student/SkillGap";
 import SRoadmap from "./pages/student/CareerRoadmap";
@@ -83,6 +84,7 @@ const router = createBrowserRouter([
     element: <DashboardLayout role="student" />,
     children: [
       { index: true, Component: SDashboard },
+      { path: "profile", Component: SProfile },
       { path: "assessment", Component: SAssessment },
       { path: "skill-profile", Component: SSkillProfile },
       { path: "skill-gap", Component: SSkillGap },

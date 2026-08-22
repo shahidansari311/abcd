@@ -8,6 +8,8 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().default('default_refresh_secret_key_change_me_in_prod'),
   JWT_ACCESS_EXPIRATION_MINUTES: z.string().default('15'),
   JWT_REFRESH_EXPIRATION_DAYS: z.string().default('30'),
+  HUGGINGFACE_API_KEY: z.string().optional(),
+  GROQ_API_KEY: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);

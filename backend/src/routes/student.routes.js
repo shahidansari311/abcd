@@ -9,8 +9,12 @@ const router = express.Router();
 router.use(auth); // Require authentication for all student routes
 router.use(rbac('student')); // Require student role
 
+const opportunityController = require('../controllers/opportunity.controller');
+
 router.route('/profile')
   .get(asyncHandler(studentController.getProfile))
   .put(asyncHandler(studentController.updateProfile));
+
+router.get('/opportunities', asyncHandler(opportunityController.getAllOpportunities));
 
 module.exports = router;

@@ -11,7 +11,13 @@ const getMyOpportunities = async (req, res) => {
   return apiResponse(res, 200, true, 'Opportunities fetched successfully', opportunities);
 };
 
+const getAllOpportunities = async (req, res) => {
+  const opportunities = await opportunityService.getAllOpportunities();
+  return apiResponse(res, 200, true, 'Opportunities fetched successfully', opportunities);
+};
+
 module.exports = {
   createOpportunity,
   getMyOpportunities,
+  getAllOpportunities,
 };

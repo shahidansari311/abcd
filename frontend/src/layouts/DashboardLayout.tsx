@@ -109,11 +109,10 @@ export default function DashboardLayout({ role }: { role: RoleKey }) {
                 <Bell size={20} />
                 <span className="absolute right-2 top-2 size-2 rounded-full bg-error" />
               </Link>
-              <button className="flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-2.5 transition-colors hover:bg-tint/60">
+              <Link to={`${meta.base}/profile`} className="flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-2.5 transition-colors hover:bg-tint/60">
                 <Avatar name="Jordan Lee" size={32} />
-                <span className="hidden text-sm font-medium text-ink sm:block">Jordan Lee</span>
-                <ChevronDown size={16} className="hidden text-ink-soft sm:block" />
-              </button>
+                <span className="hidden text-sm font-medium text-ink sm:block">My Profile</span>
+              </Link>
             </div>
           </div>
         </header>

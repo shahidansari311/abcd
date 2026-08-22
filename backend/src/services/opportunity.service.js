@@ -18,7 +18,12 @@ const getOpportunitiesForIndustry = async (industryPartnerId) => {
   return Opportunity.find({ industryPartner: industryPartnerId }).sort({ createdAt: -1 });
 };
 
+const getAllOpportunities = async () => {
+  return Opportunity.find({ status: 'open' }).populate('industryPartner', 'companyName').sort({ createdAt: -1 });
+};
+
 module.exports = {
   createOpportunity,
   getOpportunitiesForIndustry,
+  getAllOpportunities,
 };

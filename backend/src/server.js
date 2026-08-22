@@ -14,8 +14,8 @@ const startServer = async () => {
   // Initialize Socket.io
   initSocket(server);
 
-  server.listen(env.port, () => {
-    logger.info(`Server running on port ${env.port} in ${env.nodeEnv} mode`);
+  server.listen(env.PORT, () => {
+    logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
   });
 };
 

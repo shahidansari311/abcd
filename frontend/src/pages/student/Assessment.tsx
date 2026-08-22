@@ -1,52 +1,102 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { CheckCircle2, Lock, Loader, ChevronLeft, ChevronRight, Code2, BarChart3, Database, Cpu } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader, ChevronLeft, ChevronRight, Code2, Play } from "lucide-react";
 import { PageHeader, Card, Badge, ProgressBar, Button, Grid, GridItem } from "../../components/ui";
 import { fadeUp } from "../../lib/motion";
+import { api } from "../../lib/api";
 
-type Status = "Completed" | "In progress" | "Locked";
-
-const categories: { name: string; icon: typeof Code2; status: Status; progress: number }[] = [
-  { name: "Programming Fundamentals", icon: Code2, status: "Completed", progress: 100 },
-  { name: "Data Analytics", icon: BarChart3, status: "In progress", progress: 62 },
-  { name: "Databases & SQL", icon: Database, status: "In progress", progress: 40 },
-  { name: "System Design", icon: Cpu, status: "Locked", progress: 0 },
-];
-
-const toneFor: Record<Status, "primary" | "accent" | "tint"> = {
-  Completed: "primary",
-  "In progress": "accent",
-  Locked: "tint",
+type Assessment = {
+  _id: string;
+  title: string;
+  description: string;
+  type: string;
+  durationMinutes: number;
+  isActive: boolean;
 };
 
-const questions = [
-  {
-    q: "Which SQL clause is used to filter groups created by GROUP BY?",
-    options: ["WHERE", "HAVING", "FILTER", "ORDER BY"],
-    answer: 1,
-  },
-  {
-    q: "What does the term 'normalization' primarily reduce in a database?",
-    options: ["Query speed", "Data redundancy", "Table count", "Index size"],
-    answer: 1,
-  },
-  {
-    q: "Which join returns only matching rows from both tables?",
-    options: ["LEFT JOIN", "FULL OUTER JOIN", "INNER JOIN", "CROSS JOIN"],
-    answer: 2,
-  },
-];
+type Question = {
+  _id: string;
+  text: string;
+  options: string[];
+  points: number;
+};
 
-export default function Assessment() {
-  const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
+type FullAssessment = Assessment & {
+  questions: Question[];
+};
 
-  const q = questions[current];
+export default function AssessmentPage() {
+  const [assessments, setAssessments] = useState<Assessment[]>([]);
+  const [loadingList, setLoadingList] = useState(true);
 
-  function go(dir: number) {
-    setCurrent((c) => Math.min(Math.max(c + dir, 0), questions.length - 1));
-    setSelected(null);
-  }
+  // Active Assessment State
+  const [activeAssessment, setActiveAssessment] = useState<FullAssessment | null>(null);
+  const [loadingActive, setLoadingActive] = useState(false);
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({}); // questionId -> providedAnswer
+  
+  // Submission State
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState<{ score: number; maxScore: number; percentage: number } | null>(null);
+
+  useEffect(() => {
+    async function fetchAssessments() {
+      try {
+        const res = await api.get("/assessment");
+        if (res && Array.isArray(res)) {
+          setAssessments(res);
+        }
+      } catch (err) {
+        console.error("Failed to load assessments", err);
+      } finally {
+        setLoadingList(false);
+      }
+    }
+    fetchAssessments();
+  }, []);
+
+  const loadAssessment = async (id: string) => {
+    setLoadingActive(true);
+    setResult(null);
+    setCurrentQIndex(0);
+    setAnswers({});
+    try {
+      const data = await api.get(`/assessment/${id}`);
+      setActiveAssessment(data);
+      // Smooth scroll down to the active assessment area (optional but helpful)
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    } catch (err) {
+      console.error("Failed to load assessment details", err);
+    } finally {
+      setLoadingActive(false);
+    }
+  };
+
+  const handleSelectOption = (questionId: string, option: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: option }));
+  };
+
+  const submitAssessment = async () => {
+    if (!activeAssessment) return;
+    setSubmitting(true);
+    try {
+      // Map dictionary to array format expected by backend
+      const formattedAnswers = Object.entries(answers).map(([qId, ans]) => ({
+        questionId: qId,
+        providedAnswer: ans
+      }));
+
+      const res = await api.post(`/assessment/${activeAssessment._id}/submit`, { answers: formattedAnswers });
+      setResult(res);
+      setActiveAssessment(null);
+    } catch (err) {
+      console.error("Failed to submit assessment", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const currentQ = activeAssessment?.questions?.[currentQIndex];
 
   return (
     <div>
@@ -55,94 +105,144 @@ export default function Assessment() {
         subtitle="Measure your abilities and unlock verified credentials."
       />
 
-      <Grid className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {categories.map((c) => {
-          const Icon = c.icon;
-          return (
-            <GridItem key={c.name}>
-              <Card hover className="h-full">
+      {loadingList ? (
+        <div className="flex justify-center p-10"><Loader className="animate-spin text-primary" /></div>
+      ) : assessments.length === 0 ? (
+        <Card className="text-center py-10">
+          <p className="text-ink-soft">No active assessments available at the moment.</p>
+        </Card>
+      ) : (
+        <Grid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {assessments.map((a) => (
+            <GridItem key={a._id}>
+              <Card hover className="h-full flex flex-col">
                 <div className="flex items-start justify-between">
-                  <div className="grid size-11 place-items-center rounded-2xl bg-tint text-primary">
-                    <Icon size={20} />
+                  <div className="grid size-11 place-items-center rounded-2xl bg-tint text-primary shrink-0">
+                    <Code2 size={20} />
                   </div>
-                  <Badge tone={toneFor[c.status]}>
-                    <span className="inline-flex items-center gap-1">
-                      {c.status === "Completed" && <CheckCircle2 size={13} />}
-                      {c.status === "In progress" && <Loader size={13} />}
-                      {c.status === "Locked" && <Lock size={13} />}
-                      {c.status}
-                    </span>
-                  </Badge>
+                  <Badge tone="primary">{a.type}</Badge>
                 </div>
-                <h3 className="mt-4 font-semibold text-ink">{c.name}</h3>
-                <div className="mt-3">
-                  <ProgressBar value={c.progress} />
-                  <p className="mt-2 text-sm text-ink-soft">{c.progress}% complete</p>
+                <h3 className="mt-4 font-semibold text-ink line-clamp-1">{a.title}</h3>
+                <p className="mt-2 text-sm text-ink-soft line-clamp-2 flex-grow">{a.description}</p>
+                <div className="mt-4 flex items-center justify-between text-xs text-ink-soft">
+                  <span>{a.durationMinutes} mins</span>
                 </div>
                 <Button
-                  variant={c.status === "Locked" ? "ghost" : "outline"}
+                  variant="outline"
                   size="sm"
-                  className="mt-4 w-full"
-                  disabled={c.status === "Locked"}
+                  className="mt-4 w-full gap-2"
+                  onClick={() => loadAssessment(a._id)}
+                  disabled={loadingActive || activeAssessment?._id === a._id}
                 >
-                  {c.status === "Completed" ? "Review" : c.status === "Locked" ? "Locked" : "Continue"}
+                  <Play size={14}/> Start Assessment
                 </Button>
               </Card>
             </GridItem>
-          );
-        })}
-      </Grid>
+          ))}
+        </Grid>
+      )}
 
-      <motion.div variants={fadeUp} initial="hidden" animate="show" className="mt-6">
-        <Card>
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <Badge tone="accent">Active assessment</Badge>
-              <h3 className="mt-2 text-lg font-semibold text-ink">Databases & SQL</h3>
+      {result && (
+        <motion.div variants={fadeUp} initial="hidden" animate="show" className="mt-6">
+          <Card className="border-primary/20 bg-primary/5 text-center py-8">
+            <h3 className="text-2xl font-bold text-ink mb-2">Assessment Complete!</h3>
+            <p className="text-ink-soft mb-6">You scored {result.score} out of {result.maxScore}.</p>
+            <div className="inline-block relative">
+              <div className="text-4xl font-black text-primary">{Math.round(result.percentage)}%</div>
             </div>
-            <p className="text-sm font-medium text-ink-soft">
-              Question {current + 1} of {questions.length}
-            </p>
-          </div>
+          </Card>
+        </motion.div>
+      )}
 
-          <ProgressBar value={((current + 1) / questions.length) * 100} className="mb-6" />
+      {loadingActive && (
+        <div className="flex justify-center mt-10"><Loader className="animate-spin text-primary" /></div>
+      )}
 
-          <p className="text-lg font-medium text-ink">{q.q}</p>
+      <AnimatePresence mode="wait">
+        {activeAssessment && currentQ && (
+          <motion.div 
+            key={activeAssessment._id}
+            variants={fadeUp} 
+            initial="hidden" 
+            animate="show" 
+            exit="hidden"
+            className="mt-6"
+          >
+            <Card>
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <Badge tone="accent">Active assessment</Badge>
+                  <h3 className="mt-2 text-lg font-semibold text-ink">{activeAssessment.title}</h3>
+                </div>
+                <p className="text-sm font-medium text-ink-soft">
+                  Question {currentQIndex + 1} of {activeAssessment.questions.length}
+                </p>
+              </div>
 
-          <div className="mt-4 space-y-3">
-            {q.options.map((opt, i) => {
-              const active = selected === i;
-              return (
-                <button
-                  key={opt}
-                  onClick={() => setSelected(i)}
-                  className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-colors ${
-                    active ? "border-primary bg-tint" : "border-line bg-surface hover:bg-tint"
-                  }`}
+              <ProgressBar 
+                value={((currentQIndex + 1) / activeAssessment.questions.length) * 100} 
+                className="mb-6" 
+              />
+
+              <p className="text-lg font-medium text-ink">{currentQ.text}</p>
+
+              <div className="mt-4 space-y-3">
+                {currentQ.options.map((opt, i) => {
+                  const isActive = answers[currentQ._id] === opt;
+                  return (
+                    <button
+                      key={opt}
+                      onClick={() => handleSelectOption(currentQ._id, opt)}
+                      className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-colors ${
+                        isActive ? "border-primary bg-tint" : "border-line bg-surface hover:bg-tint"
+                      }`}
+                    >
+                      <span
+                        className={`grid size-6 shrink-0 place-items-center rounded-full border text-sm font-semibold ${
+                          isActive ? "border-primary bg-primary text-white" : "border-line text-ink-soft"
+                        }`}
+                      >
+                        {String.fromCharCode(65 + i)}
+                      </span>
+                      <span className="text-ink">{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-6 flex items-center justify-between">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setCurrentQIndex(i => i - 1)} 
+                  disabled={currentQIndex === 0}
                 >
-                  <span
-                    className={`grid size-6 shrink-0 place-items-center rounded-full border text-sm font-semibold ${
-                      active ? "border-primary bg-primary text-white" : "border-line text-ink-soft"
-                    }`}
+                  <ChevronLeft size={16} /> Prev
+                </Button>
+                
+                {currentQIndex === activeAssessment.questions.length - 1 ? (
+                  <Button 
+                    variant="primary" 
+                    size="sm" 
+                    onClick={submitAssessment} 
+                    disabled={submitting || Object.keys(answers).length < activeAssessment.questions.length}
                   >
-                    {String.fromCharCode(65 + i)}
-                  </span>
-                  <span className="text-ink">{opt}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="mt-6 flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={() => go(-1)} disabled={current === 0}>
-              <ChevronLeft size={16} /> Prev
-            </Button>
-            <Button variant="primary" size="sm" onClick={() => go(1)} disabled={current === questions.length - 1}>
-              Next <ChevronRight size={16} />
-            </Button>
-          </div>
-        </Card>
-      </motion.div>
+                    {submitting ? <Loader className="animate-spin" size={16}/> : "Submit Assessment"}
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="primary" 
+                    size="sm" 
+                    onClick={() => setCurrentQIndex(i => i + 1)}
+                  >
+                    Next <ChevronRight size={16} />
+                  </Button>
+                )}
+              </div>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
