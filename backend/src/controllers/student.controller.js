@@ -2,6 +2,7 @@ const studentService = require('../services/student.service');
 const apiResponse = require('../utils/apiResponse');
 const { getGroqChatCompletion } = require('../ai/llmClient');
 const SkillProfile = require('../models/SkillProfile.model');
+const Opportunity = require('../models/Opportunity.model');
 
 const getProfile = async (req, res) => {
   const student = await studentService.getProfile(req.user.id);
@@ -125,10 +126,110 @@ At least one should be "current". Prioritize what they are lacking.`;
   }
 };
 
+const getSkillGap = async (req, res) => {
+  const studentId = req.user.id;
+  const skillProfile = await SkillProfile.findOne({ student: studentId }).lean();
+  const opportunities = await Opportunity.find({ isActive: true }).lean();
+
+  const industryDemand = {};
+  opportunities.forEach(opp => {
+    opp.requiredSkills.forEach(reqSkill => {
+      if (!industryDemand[reqSkill.skillName]) {
+        industryDemand[reqSkill.skillName] = { maxRequired: 0, count: 0 };
+      }
+      if (reqSkill.minimumScore > industryDemand[reqSkill.skillName].maxRequired) {
+        industryDemand[reqSkill.skillName].maxRequired = reqSkill.minimumScore;
+      }
+      industryDemand[reqSkill.skillName].count += 1;
+    });
+  });
+
+  const studentSkills = {};
+  if (skillProfile && skillProfile.skills) {
+    skillProfile.skills.forEach(s => {
+      studentSkills[s.name] = s.score;
+    });
+  }
+
+  const analysis = [];
+  let overallGap = 0;
+  let gapCount = 0;
+
+  for (const skillName in industryDemand) {
+    const required = industryDemand[skillName].maxRequired;
+    const current = studentSkills[skillName] || 0;
+    
+    analysis.push({
+      skill: skillName,
+      current,
+      required,
+      gap: Math.max(0, required - current)
+    });
+
+    if (required > current) {
+      overallGap += (required - current);
+      gapCount += 1;
+    }
+  }
+
+  // Sort by gap size
+  analysis.sort((a, b) => b.gap - a.gap);
+  
+  // Format the radar data for the frontend
+  const radarData = analysis.slice(0, 6).map(item => ({
+    subject: item.skill,
+    A: item.current,
+    B: item.required,
+    fullMark: 100
+  }));
+
+  // Find top missing skills
+  const targetRole = opportunities.length > 0 ? opportunities[0].title : "Data Scientist";
+
+  return apiResponse(res, 200, true, 'Skill gap fetched', {
+    targetRole,
+    radarData: radarData.length > 0 ? radarData : [
+      { subject: "Python", A: 0, B: 80, fullMark: 100 },
+      { subject: "SQL", A: 0, B: 75, fullMark: 100 }
+    ],
+    detailedAnalysis: analysis.length > 0 ? analysis : [
+      { skill: "Python", current: 0, required: 80, gap: 80 }
+    ]
+  });
+};
+
+const getPassport = async (req, res) => {
+  const studentId = req.user.id;
+  const skillProfile = await SkillProfile.findOne({ student: studentId }).lean();
+  
+  const verifications = [];
+  if (skillProfile && skillProfile.skills) {
+    skillProfile.skills.filter(s => s.isVerified).forEach(s => {
+      verifications.push({
+        id: s._id || Math.random().toString(),
+        skill: s.name,
+        issuer: "Industry Partner",
+        date: s.updatedAt || new Date(),
+        type: "Assessment",
+        score: s.score
+      });
+    });
+  }
+
+  return apiResponse(res, 200, true, 'Passport fetched', {
+    address: "0x" + studentId.substring(0, 10).padEnd(40, '0'), // Mock crypto address based on ID
+    verifications: verifications.length > 0 ? verifications : [
+      { id: "1", skill: "Platform Onboarding", issuer: "SkillBridge", date: new Date(), type: "System", score: 100 }
+    ]
+  });
+};
+
 module.exports = {
   getProfile,
   updateProfile,
   chatWithAgent,
   simulateReadiness,
   generateRoadmap,
+  getSkillGap,
+  getPassport,
 };

@@ -11,8 +11,8 @@ router.use(auth);
 // Student routes
 router.post('/request', rbac('student'), asyncHandler(verificationController.createRequest));
 
-// Academician routes
-router.get('/pending', rbac('academician'), asyncHandler(verificationController.getPendingRequests));
-router.put('/:id/process', rbac('academician'), asyncHandler(verificationController.processRequest));
+// Academician and Industry routes
+router.get('/pending', rbac('academician', 'industry'), asyncHandler(verificationController.getPendingRequests));
+router.put('/:id/process', rbac('academician', 'industry'), asyncHandler(verificationController.processRequest));
 
 module.exports = router;

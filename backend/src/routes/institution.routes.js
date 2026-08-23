@@ -13,5 +13,10 @@ router.use(auth);
 
 router.get('/skill-gaps', asyncHandler(institutionController.getSkillGaps));
 router.post('/interventions', asyncHandler(institutionController.recordIntervention));
+router.get('/stats', asyncHandler(institutionController.getDashboardStats));
+router.get('/students', asyncHandler(institutionController.getStudents));
+router.get('/heatmap', asyncHandler(institutionController.getHeatmap));
+router.get('/partners', asyncHandler(institutionController.getPartners));
+router.get('/placements', asyncHandler(institutionController.getPlacementAnalytics));
 
 module.exports = router;

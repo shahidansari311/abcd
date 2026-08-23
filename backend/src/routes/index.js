@@ -11,6 +11,7 @@ const messagingRoutes = require('./messaging.routes');
 const workspaceRoutes = require('./workspace.routes');
 const adminRoutes = require('./admin.routes');
 const institutionRoutes = require('./institution.routes');
+const academicianRoutes = require('./academician.routes');
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.use('/auth', authRoutes);
 router.use('/student', studentRoutes);
 router.use('/industry', industryRoutes);
 router.use('/institution', institutionRoutes);
+router.use('/academician', academicianRoutes);
 router.use('/assessment', assessmentRoutes);
 router.use('/skill', skillRoutes);
 router.use('/opportunities', opportunityRoutes);

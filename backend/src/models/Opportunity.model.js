@@ -11,6 +11,9 @@ const opportunitySchema = new mongoose.Schema({
     minimumScore: { type: Number, required: true }
   }],
   isActive: { type: Boolean, default: true },
+  status: { type: String, enum: ['Open', 'Paused', 'Closed'], default: 'Open' },
+  applicantsCount: { type: Number, default: 0 },
+  views: { type: Number, default: 0 },
   // Vector embedding of the job description for semantic matching
   embedding: { type: [Number], select: false } 
 }, { timestamps: true });

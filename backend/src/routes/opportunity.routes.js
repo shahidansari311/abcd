@@ -7,9 +7,13 @@ const asyncHandler = require('../utils/asyncHandler');
 const router = express.Router();
 
 router.use(auth);
-router.use(rbac('industry'));
 
-router.post('/', asyncHandler(opportunityController.createOpportunity));
-router.get('/', asyncHandler(opportunityController.getMyOpportunities));
+// All authenticated users can see all open opportunities
+router.get('/all', asyncHandler(opportunityController.getAllOpportunities));
+
+// Only industry can create, manage, and view their own
+router.post('/', rbac('industry'), asyncHandler(opportunityController.createOpportunity));
+router.get('/', rbac('industry'), asyncHandler(opportunityController.getMyOpportunities));
+router.patch('/:id/status', rbac('industry'), asyncHandler(opportunityController.updateStatus));
 
 module.exports = router;

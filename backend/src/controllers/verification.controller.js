@@ -7,7 +7,12 @@ const createRequest = async (req, res) => {
 };
 
 const getPendingRequests = async (req, res) => {
-  const requests = await verificationService.getPendingRequestsForAcademician(req.user.id);
+  let requests;
+  if (req.user.role === 'industry') {
+    requests = await verificationService.getPendingRequestsForIndustry(req.user.id);
+  } else {
+    requests = await verificationService.getPendingRequestsForAcademician(req.user.id);
+  }
   return apiResponse(res, 200, true, 'Pending requests fetched', requests);
 };
 
