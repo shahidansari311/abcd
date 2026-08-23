@@ -4,30 +4,40 @@ import { Send, Bot, Sparkles } from "lucide-react";
 import { PageHeader, Card, Button, Avatar, Badge, ProgressBar } from "../../components/ui";
 import { fadeUp } from "../../lib/motion";
 
-type Msg = { from: "ai" | "user"; text: string };
+import { api } from "../../lib/api";
 
-const aiFollowups = [
-  "Great — can you walk me through a specific example where you applied that?",
-  "Interesting. How did you measure the impact of that work?",
-  "Thanks. What would you do differently if you faced that challenge again?",
-  "Good. How do you stay current with new tools and techniques?",
-];
+type Msg = { from: "ai" | "user"; text: string };
 
 export default function MockInterview() {
   const [messages, setMessages] = useState<Msg[]>([
-    { from: "ai", text: "Hi Maya! Let's begin your mock interview. Tell me about a data project you're proud of." },
+    { from: "ai", text: "Hi! Let's begin your mock interview. Tell me about a data project you're proud of." },
   ]);
   const [input, setInput] = useState("");
-  const [turn, setTurn] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  function send() {
+  async function send() {
     const text = input.trim();
     if (!text) return;
-    const next: Msg[] = [...messages, { from: "user", text }];
-    next.push({ from: "ai", text: aiFollowups[turn % aiFollowups.length] });
-    setMessages(next);
-    setTurn((t) => t + 1);
+    
+    const newMessages: Msg[] = [...messages, { from: "user", text }];
+    setMessages(newMessages);
     setInput("");
+    setLoading(true);
+
+    try {
+      const history = messages.map(m => ({
+        role: m.from === "ai" ? "assistant" : "user",
+        content: m.text
+      }));
+
+      const res = await api.post("/student/mock-interview/chat", { message: text, history });
+      setMessages(prev => [...prev, { from: "ai", text: res.reply }]);
+    } catch (err) {
+      console.error(err);
+      setMessages(prev => [...prev, { from: "ai", text: "I'm having trouble connecting right now." }]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -71,10 +81,11 @@ export default function MockInterview() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
                 placeholder="Type your answer..."
-                className="flex-1 rounded-full border border-line bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-primary"
+                disabled={loading}
+                className="flex-1 rounded-full border border-line bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-primary disabled:opacity-50"
               />
-              <Button variant="primary" size="sm" onClick={send}>
-                <Send size={16} /> Send
+              <Button variant="primary" size="sm" onClick={send} disabled={loading || !input.trim()}>
+                <Send size={16} /> {loading ? "Thinking..." : "Send"}
               </Button>
             </div>
           </Card>

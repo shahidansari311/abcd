@@ -10,6 +10,10 @@ const studentSchema = new mongoose.Schema({
   skillProfileRef: { type: mongoose.Schema.Types.ObjectId, ref: 'SkillProfile' },
   resumeUrl: { type: String },
   readinessScore: { type: Number, default: 0 },
+  readinessHistory: [{
+    score: { type: Number },
+    date: { type: Date, default: Date.now }
+  }]
 });
 
 const Student = User.discriminator('student', studentSchema);

@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Clock, Calendar, Target } from "lucide-react";
 import { PageHeader, Card, Badge } from "../../components/ui";
 import { CompatibilityScore, BarList } from "../../components/charts";
 import { fadeUp } from "../../lib/motion";
+import { api } from "../../lib/api";
 
 const focusAreas = ["Machine Learning", "Cloud", "Statistics", "Communication"];
 
@@ -11,22 +12,27 @@ export default function WhatIfSimulator() {
   const [hours, setHours] = useState(10);
   const [focus, setFocus] = useState(0);
   const [months, setMonths] = useState(6);
+  const [projected, setProjected] = useState(0);
+  const [skills, setSkills] = useState<{label: string; value: number}[]>([]);
 
-  const projected = useMemo(() => {
-    const base = 58;
-    const effort = (hours / 40) * (months / 12) * 60;
-    return Math.min(99, Math.round(base + effort));
-  }, [hours, months]);
-
-  const skills = useMemo(() => {
-    const boost = (hours * months) / 12;
-    const focusBonus = (i: number) => (i === focus ? 18 : 0);
-    return [
-      { label: "Machine Learning", value: Math.min(99, Math.round(45 + boost + focusBonus(0))) },
-      { label: "Cloud (AWS)", value: Math.min(99, Math.round(38 + boost + focusBonus(1))) },
-      { label: "Statistics", value: Math.min(99, Math.round(58 + boost * 0.6 + focusBonus(2))) },
-      { label: "Communication", value: Math.min(99, Math.round(84 + boost * 0.3 + focusBonus(3))) },
-    ];
+  useEffect(() => {
+    async function simulate() {
+      try {
+        const res = await api.post("/student/simulate-readiness", {
+          hours,
+          timeframe: months,
+          focusArea: focusAreas[focus]
+        });
+        setProjected(res.projectedScore || 0);
+        setSkills(res.skills || []);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    
+    // add small debounce
+    const t = setTimeout(simulate, 300);
+    return () => clearTimeout(t);
   }, [hours, months, focus]);
 
   return (

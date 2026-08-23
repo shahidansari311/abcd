@@ -28,6 +28,7 @@ import {
   TrendingUp,
   Handshake,
   FileBarChart,
+  Bot,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -44,6 +45,8 @@ export const roleMeta: Record<RoleKey, { name: string; base: string }> = {
 export const roleNav: Record<RoleKey, NavItem[]> = {
   student: [
     { label: "Dashboard", to: "/student", icon: <LayoutDashboard size={18} /> },
+    { label: "AI Career Agent", to: "/student/agent", icon: <Bot size={18} /> },
+    { label: "Leaderboards", to: "/student/leaderboards", icon: <Trophy size={18} /> },
     { label: "Assessment", to: "/student/assessment", icon: <ClipboardCheck size={18} /> },
     { label: "Skill Profile", to: "/student/skill-profile", icon: <UserCircle size={18} /> },
     { label: "Skill Gap", to: "/student/skill-gap", icon: <Target size={18} /> },

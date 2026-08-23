@@ -5,7 +5,7 @@ import { PageHeader, Card, Avatar, Badge, ProgressBar, Button, Grid, GridItem } 
 import { RadarChart } from "../../components/charts";
 import { fadeUp } from "../../lib/motion";
 import { api } from "../../lib/api";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 type SkillEntry = {
   _id: string;

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Check, Globe, Code2 } from "lucide-react";
 
+import { api } from "../../lib/api";
+
 export default function Login() {
   const nav = useNavigate();
   const [showPw, setShowPw] = useState(false);
@@ -11,7 +13,7 @@ export default function Login() {
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.includes("@") || pw.length < 4) {
       setError("Enter a valid email and a password of at least 4 characters.");
@@ -19,8 +21,19 @@ export default function Login() {
     }
     setError("");
     setStatus("loading");
-    setTimeout(() => setStatus("success"), 1100);
-    setTimeout(() => nav("/student"), 2100);
+    
+    try {
+      const data = await api.post("/auth/login", { email, password: pw });
+      localStorage.setItem("token", data.tokens.accessToken);
+      localStorage.setItem("role", data.user.role);
+      setStatus("success");
+      setTimeout(() => {
+        nav(`/${data.user.role}`);
+      }, 1000);
+    } catch (err: any) {
+      setError(err.message || "Invalid credentials. Please try again.");
+      setStatus("idle");
+    }
   }
 
   const field =

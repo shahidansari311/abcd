@@ -4,23 +4,41 @@ import { UploadCloud, FileText, CheckCircle2, AlertTriangle, Lightbulb } from "l
 import { PageHeader, Card, Button, Badge, ProgressBar } from "../../components/ui";
 import { CompatibilityScore, BarList } from "../../components/charts";
 import { fadeUp, stagger } from "../../lib/motion";
+import { api } from "../../lib/api";
+import { Loader } from "lucide-react";
 
-const categories = [
-  { label: "Formatting", value: 88 },
-  { label: "Keywords", value: 64 },
-  { label: "Impact", value: 72 },
-  { label: "Skills match", value: 79 },
-];
-
-const suggestions = [
-  { text: "Add measurable metrics to your project bullet points.", tone: "warning" as const },
-  { text: "Include keywords: 'machine learning', 'A/B testing'.", tone: "warning" as const },
-  { text: "Strong action verbs used throughout — keep it up.", tone: "primary" as const },
-  { text: "Consider a concise professional summary at the top.", tone: "accent" as const },
-];
+type Category = { label: string; value: number };
+type Suggestion = { text: string; tone: "primary" | "warning" | "accent" };
 
 export default function ResumeAnalyzer() {
   const [analyzed, setAnalyzed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [score, setScore] = useState(0);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [error, setError] = useState("");
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLoading(true);
+    setError("");
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    try {
+      const res = await api.postForm("/student/resume-analyze", formData);
+      setScore(res.overallScore || 0);
+      setCategories(res.categories || []);
+      setSuggestions(res.suggestions || []);
+      setAnalyzed(true);
+    } catch (err: any) {
+      setError(err.message || "Failed to analyze resume.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -35,9 +53,14 @@ export default function ResumeAnalyzer() {
               </div>
               <h3 className="mt-4 text-lg font-semibold text-ink">Drop your resume here</h3>
               <p className="mt-1 text-sm text-ink-soft">PDF or DOCX, up to 5MB</p>
-              <Button variant="primary" size="sm" className="mt-5" onClick={() => setAnalyzed(true)}>
-                <FileText size={16} /> Upload &amp; analyze
-              </Button>
+              {error && <p className="mt-2 text-sm text-error">{error}</p>}
+              <label className="mt-5 relative">
+                <input type="file" accept=".pdf,.txt" className="sr-only" onChange={handleUpload} disabled={loading} />
+                <Button variant="primary" size="sm" className="pointer-events-none">
+                  {loading ? <Loader className="animate-spin" size={16} /> : <FileText size={16} />} 
+                  {loading ? "Analyzing..." : "Upload & analyze"}
+                </Button>
+              </label>
             </div>
           </Card>
         </motion.div>
@@ -47,7 +70,7 @@ export default function ResumeAnalyzer() {
             <Card className="h-full">
               <h3 className="mb-2 text-center font-semibold text-ink">Overall score</h3>
               <div className="grid place-items-center">
-                <CompatibilityScore value={76} size={160} label="Resume strength" />
+                <CompatibilityScore value={score} size={160} label="Resume strength" />
               </div>
               <Button variant="outline" size="sm" className="mt-4 w-full" onClick={() => setAnalyzed(false)}>
                 Upload another

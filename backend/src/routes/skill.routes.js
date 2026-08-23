@@ -12,5 +12,6 @@ router.use(rbac('student')); // Primarily student facing for now
 router.get('/profile', asyncHandler(skillController.getProfile));
 router.get('/gaps', asyncHandler(skillController.getGapAnalysis));
 router.post('/roadmap', asyncHandler(skillController.getRoadmap));
+router.get('/leaderboard', asyncHandler(skillController.getLeaderboard));
 
 module.exports = router;

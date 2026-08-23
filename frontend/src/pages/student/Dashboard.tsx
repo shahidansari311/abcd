@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Target, Briefcase, ShieldCheck, Route, ArrowRight, CheckCircle2, Circle, Loader } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, StatCard, Button, Badge } from "../../components/ui";
 import { RadarChart, TrendChart, CompatibilityScore } from "../../components/charts";
@@ -61,7 +61,20 @@ export default function Dashboard() {
       <PageHeader
         title={`Welcome back, ${student?.firstName || "Student"}`}
         subtitle="Here's how your journey from campus to career is progressing."
-        action={<Button variant="primary" size="sm"><Route size={16} /> View roadmap</Button>}
+        action={
+          <div className="flex gap-2">
+            <Link to="/student/agent">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Target size={16} /> Ask AI Career Agent
+              </Button>
+            </Link>
+            <Link to="/student/roadmap">
+              <Button variant="primary" size="sm" className="gap-2">
+                <Route size={16} /> View roadmap
+              </Button>
+            </Link>
+          </div>
+        }
       />
 
       <Grid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

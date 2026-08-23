@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Outlet, useLocation, Link } from "react-router";
+import { NavLink, Outlet, useLocation, Link, Navigate, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Leaf, Bell, Search, Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { roleNav, roleMeta, type RoleKey } from "../data/nav";
@@ -7,10 +7,18 @@ import { pageVariants } from "../lib/motion";
 import { Avatar } from "../components/ui";
 
 export default function DashboardLayout({ role }: { role: RoleKey }) {
-  const nav = roleNav[role];
+  const navMenu = roleNav[role];
   const meta = roleMeta[role];
   const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
 
   const SidebarContent = (
     <div className="flex h-full flex-col">
@@ -22,7 +30,7 @@ export default function DashboardLayout({ role }: { role: RoleKey }) {
       </Link>
       <p className="px-5 pb-3 text-xs font-semibold uppercase tracking-widest text-tint/60">{meta.name}</p>
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-6">
-        {nav.map((item) => (
+        {navMenu.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -51,15 +59,20 @@ export default function DashboardLayout({ role }: { role: RoleKey }) {
         ))}
       </nav>
       <div className="border-t border-white/10 p-3">
-        <Link
-          to="/login"
-          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10"
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10"
         >
           <LogOut size={18} /> Sign out
-        </Link>
+        </button>
       </div>
     </div>
   );
+
+  // Protected Route Logic
+  if (!localStorage.getItem("token")) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-bg">

@@ -24,6 +24,8 @@ import SSkillProfile from "./pages/student/SkillProfile";
 import SSkillGap from "./pages/student/SkillGap";
 import SRoadmap from "./pages/student/CareerRoadmap";
 import SSimulator from "./pages/student/WhatIfSimulator";
+import SCareerAgent from "./pages/student/CareerAgent";
+import SLeaderboards from "./pages/student/Leaderboards";
 import SOpportunities from "./pages/student/Opportunities";
 import SOpportunityDetail from "./pages/student/OpportunityDetail";
 import SApplications from "./pages/student/ApplicationsTracker";
@@ -90,6 +92,8 @@ const router = createBrowserRouter([
       { path: "skill-gap", Component: SSkillGap },
       { path: "roadmap", Component: SRoadmap },
       { path: "simulator", Component: SSimulator },
+      { path: "agent", Component: SCareerAgent },
+      { path: "leaderboards", Component: SLeaderboards },
       { path: "opportunities", Component: SOpportunities },
       { path: "opportunities/:id", Component: SOpportunityDetail },
       { path: "applications", Component: SApplications },

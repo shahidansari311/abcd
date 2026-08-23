@@ -1,18 +1,18 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Check, Target } from "lucide-react";
+import { Check, Target, Loader2 } from "lucide-react";
 import { PageHeader, Card, Badge, ProgressBar } from "../../components/ui";
 import { stagger, fadeUp } from "../../lib/motion";
+import { api } from "../../lib/api";
 
 type Status = "done" | "current" | "upcoming";
 
-const milestones: { title: string; status: Status; desc: string; progress?: number }[] = [
-  { title: "Foundations", status: "done", desc: "Master programming fundamentals and core statistics." },
-  { title: "Data Analytics", status: "done", desc: "Learn SQL, data cleaning, and visualization tools." },
-  { title: "Machine Learning", status: "current", desc: "Build ML models and complete an applied project.", progress: 45 },
-  { title: "Cloud & Deployment", status: "upcoming", desc: "Deploy models on AWS and learn MLOps basics." },
-  { title: "Portfolio & Interviews", status: "upcoming", desc: "Polish portfolio, practice mock interviews, apply." },
-  { title: "Data Scientist role", status: "upcoming", desc: "Land your target position in industry." },
-];
+type Milestone = {
+  title: string;
+  status: Status;
+  desc: string;
+  progress?: number;
+};
 
 const dotClass: Record<Status, string> = {
   done: "bg-primary text-white border-primary",
@@ -33,6 +33,28 @@ const labelFor: Record<Status, string> = {
 };
 
 export default function CareerRoadmap() {
+  const [milestones, setMilestones] = useState<Milestone[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [readiness, setReadiness] = useState(0);
+
+  useEffect(() => {
+    async function init() {
+      try {
+        const [roadmapRes, profileRes] = await Promise.all([
+          api.get("/student/roadmap"),
+          api.get("/student/profile")
+        ]);
+        setMilestones(roadmapRes || []);
+        setReadiness(profileRes.readinessScore || 0);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    init();
+  }, []);
+
   return (
     <div>
       <PageHeader title="Career roadmap" subtitle="Your personalized path from student to professional." />
@@ -48,11 +70,14 @@ export default function CareerRoadmap() {
           </div>
           <div className="ml-auto text-right">
             <p className="text-sm text-ink-soft">Overall progress</p>
-            <p className="text-lg font-semibold text-primary">58%</p>
+            <p className="text-lg font-semibold text-primary">{readiness}%</p>
           </div>
         </Card>
       </motion.div>
 
+      {loading ? (
+        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary size-8" /></div>
+      ) : (
       <motion.ol variants={stagger} initial="hidden" animate="show" className="relative ml-3 border-l-2 border-line">
         {milestones.map((m) => (
           <motion.li key={m.title} variants={fadeUp} className="relative mb-8 pl-8 last:mb-0">
@@ -78,6 +103,7 @@ export default function CareerRoadmap() {
           </motion.li>
         ))}
       </motion.ol>
+      )}
     </div>
   );
 }
