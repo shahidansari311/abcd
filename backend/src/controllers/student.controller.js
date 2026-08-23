@@ -93,24 +93,25 @@ const generateRoadmap = async (req, res) => {
     : 'No skills added yet.';
 
   const systemPrompt = `You are an expert AI Career Advisor for ${student.firstName}. 
-Generate a JSON array of exact 5 career milestones for them to reach a Data Scientist or related role.
+Generate a JSON object with a single key "roadmap" containing an array of exact 5 career milestones for them to reach a Data Scientist or related role.
 Their current skills: ${skillsContext}.
-Return ONLY a valid JSON array of objects with the exact structure:
-[
-  { "title": "Milestone Name", "status": "done" | "current" | "upcoming", "desc": "Brief 1-sentence description" }
-]
-At least one should be "current". Prioritize what they are lacking.`;
+Return ONLY a valid JSON object with the exact structure:
+{
+  "roadmap": [
+    { "title": "Milestone Name", "status": "done" | "current" | "upcoming", "desc": "Brief 1-sentence description" }
+  ]
+}
+At least one milestone should be "current". Prioritize what they are lacking.`;
 
   try {
-    const aiResponse = await getGroqChatCompletion([{ role: 'system', content: systemPrompt }]);
-    const replyText = aiResponse.choices[0]?.message?.content || "[]";
-    const jsonMatch = replyText.match(/\[.*\]/s);
-    let milestones = [];
-    if (jsonMatch) {
-      milestones = JSON.parse(jsonMatch[0]);
-    } else {
-      milestones = JSON.parse(replyText);
-    }
+    const aiResponse = await getGroqChatCompletion(
+      [{ role: 'system', content: systemPrompt }], 
+      { response_format: { type: 'json_object' } }
+    );
+    const replyText = aiResponse.choices[0]?.message?.content || '{"roadmap": []}';
+    const parsedData = JSON.parse(replyText);
+    const milestones = parsedData.roadmap || [];
+    
     return apiResponse(res, 200, true, 'Roadmap generated', milestones);
   } catch (err) {
     console.error("Groq Error (Roadmap):", err);
