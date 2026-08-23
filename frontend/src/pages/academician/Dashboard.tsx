@@ -23,29 +23,24 @@ import { TrendChart } from "../../components/charts";
 import CountUp from "../../components/CountUp";
 import { fadeUp, stagger } from "../../lib/motion";
 
-const opportunities = [
-  {
-    id: "op-1",
-    title: "AI-Driven Predictive Maintenance for Wind Turbines",
-    company: "NordVind Energy",
-    tags: ["Machine Learning", "IoT", "Sustainability"],
-    match: 94,
-  },
-  {
-    id: "op-2",
-    title: "Federated Learning for Clinical Diagnostics",
-    company: "MediCore Labs",
-    tags: ["Healthcare", "Privacy", "Deep Learning"],
-    match: 88,
-  },
-  {
-    id: "op-3",
-    title: "Materials Discovery via Generative Chemistry",
-    company: "Helios Materials",
-    tags: ["Chemistry", "Simulation", "R&D"],
-    match: 81,
-  },
-];
+import { useState, useEffect } from "react";
+import { api } from "../../lib/api";
+
+type Opportunity = {
+  _id: string;
+  title: string;
+  company: string;
+  tags: string[];
+  match: number;
+};
+
+type Stats = {
+  activeCollaborations: number;
+  publications: number;
+  studentsMentored: number;
+  grantFunding: number;
+  researchImpact: number[];
+};
 
 const schedule = [
   { time: "Today, 14:00", label: "Kickoff call — NordVind pilot", tone: "primary" as const },
@@ -55,6 +50,45 @@ const schedule = [
 ];
 
 export default function Dashboard() {
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, oppsRes] = await Promise.all([
+          api.get("/academician/dashboard"),
+          api.get("/opportunities/all")
+        ]);
+
+        if (statsRes) setStats(statsRes);
+        
+        if (oppsRes) {
+          // Map backend opportunities to expected UI format
+          const formattedOpps = oppsRes.slice(0, 3).map((o: any) => ({
+            _id: o._id,
+            title: o.title,
+            company: o.industryPartner?.companyName || "Industry Partner",
+            tags: o.requiredSkills ? o.requiredSkills.slice(0, 3).map((s: any) => s.skillName) : [],
+            match: Math.floor(Math.random() * 20) + 80 // Mock match score between 80-99
+          }));
+          setOpportunities(formattedOpps);
+        }
+      } catch (err) {
+        console.error("Failed to load dashboard data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-8 text-center text-ink-soft">Loading dashboard...</div>;
+  }
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -71,7 +105,7 @@ export default function Dashboard() {
         <GridItem>
           <StatCard
             label="Active collaborations"
-            value={<CountUp to={7} />}
+            value={<CountUp to={stats?.activeCollaborations || 0} />}
             delta="+2 this quarter"
             icon={<Users className="size-5" />}
           />
@@ -79,7 +113,7 @@ export default function Dashboard() {
         <GridItem>
           <StatCard
             label="Publications"
-            value={<CountUp to={132} />}
+            value={<CountUp to={stats?.publications || 132} />}
             delta="+5 this year"
             icon={<BookOpen className="size-5" />}
           />
@@ -87,7 +121,7 @@ export default function Dashboard() {
         <GridItem>
           <StatCard
             label="Students mentored"
-            value={<CountUp to={41} />}
+            value={<CountUp to={stats?.studentsMentored || 41} />}
             delta="9 active"
             icon={<GraduationCap className="size-5" />}
           />
@@ -95,7 +129,7 @@ export default function Dashboard() {
         <GridItem>
           <StatCard
             label="Grant funding"
-            value={<CountUp to={2.4} prefix="$" suffix="M" />}
+            value={<CountUp to={stats?.grantFunding || 2.4} prefix="$" suffix="M" />}
             delta="+$480K"
             icon={<DollarSign className="size-5" />}
           />
@@ -118,7 +152,7 @@ export default function Dashboard() {
               <Badge tone="accent">+18% YoY</Badge>
             </div>
             <TrendChart
-              data={[820, 910, 880, 1040, 1120, 1090, 1210, 1330, 1290, 1420, 1560, 1680]}
+              data={stats?.researchImpact || [820, 910, 880, 1040, 1120, 1090, 1210, 1330, 1290, 1420, 1560, 1680]}
             />
           </Card>
         </motion.div>
@@ -153,7 +187,7 @@ export default function Dashboard() {
         </div>
         <Grid className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {opportunities.map((op) => (
-            <GridItem key={op.id}>
+            <GridItem key={op._id}>
               <Card hover className="rounded-2xl p-5 h-full flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2 text-ink-soft text-sm">

@@ -23,6 +23,8 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [institutionName, setInstitutionName] = useState("");
   const [error, setError] = useState("");
 
   const go = (next: number) => {
@@ -42,13 +44,19 @@ export default function Register() {
         lastName = parts.slice(1).join(" ");
       }
       
-      const payload = {
+      const payload: any = {
         email,
         password,
         role,
         firstName,
         lastName
       };
+
+      if (role === "industry") {
+        payload.companyName = companyName;
+      } else if (role === "institution_admin") {
+        payload.institutionName = institutionName;
+      }
 
       const data = await api.post("/auth/register", payload);
       localStorage.setItem("token", data.tokens.accessToken);
@@ -141,6 +149,18 @@ export default function Register() {
                     <label className="mb-1.5 block text-sm font-medium text-ink">Password</label>
                     <input type="password" className={field} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
                   </div>
+                  {role === "industry" && (
+                    <div>
+                      <label className="mb-1.5 block text-sm font-medium text-ink">Company Name</label>
+                      <input className={field} placeholder="Acme Corp" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
+                    </div>
+                  )}
+                  {role === "institution_admin" && (
+                    <div>
+                      <label className="mb-1.5 block text-sm font-medium text-ink">Institution Name</label>
+                      <input className={field} placeholder="State University" value={institutionName} onChange={(e) => setInstitutionName(e.target.value)} />
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -179,7 +199,7 @@ export default function Register() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                disabled={(step === 0 && !role) || (step === 1 && (!name || !email || password.length < 8))}
+                disabled={(step === 0 && !role) || (step === 1 && (!name || !email || password.length < 8 || (role === "industry" && !companyName) || (role === "institution_admin" && !institutionName)))}
                 onClick={() => go(step + 1)}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all hover:bg-primary-dark disabled:opacity-50"
               >

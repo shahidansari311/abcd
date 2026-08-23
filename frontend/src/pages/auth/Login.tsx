@@ -28,7 +28,8 @@ export default function Login() {
       localStorage.setItem("role", data.user.role);
       setStatus("success");
       setTimeout(() => {
-        nav(`/${data.user.role}`);
+        const rolePath = data.user.role === 'institution_admin' ? 'institution' : data.user.role;
+        nav(`/${rolePath}`);
       }, 1000);
     } catch (err: any) {
       setError(err.message || "Invalid credentials. Please try again.");

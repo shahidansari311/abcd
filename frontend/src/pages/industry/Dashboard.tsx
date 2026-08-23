@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { Briefcase, Users, CalendarCheck, Trophy, ArrowUpRight } from "lucide-react";
@@ -5,16 +6,15 @@ import { PageHeader, Card, Grid, GridItem, StatCard, Badge, Avatar, Button } fro
 import { TrendChart, BarList } from "../../components/charts";
 import CountUp from "../../components/CountUp";
 import { fadeUp } from "../../lib/motion";
+import { api } from "../../lib/api";
 
-const applications = [12, 18, 15, 24, 30, 28, 41, 38, 52, 47, 61, 58];
-
-const stages = [
-  { label: "Sourced", value: 46 },
-  { label: "Screening", value: 28 },
-  { label: "Interview", value: 14 },
-  { label: "Offer", value: 6 },
-  { label: "Hired", value: 3 },
-];
+type DashboardStats = {
+  activePostings: number;
+  pipelineCount: number;
+  interviewsCount: number;
+  hiresCount: number;
+  applicationsTrend: number[];
+};
 
 const candidates = [
   { id: 1, name: "Amara Okafor", role: "ML Research Intern", match: 96 },
@@ -24,6 +24,37 @@ const candidates = [
 ];
 
 export default function Dashboard() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await api.get("/industry/dashboard");
+        if (res) {
+          setStats(res);
+        }
+      } catch (err) {
+        console.error("Failed to load dashboard stats", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const stages = [
+    { label: "Sourced", value: stats?.pipelineCount || 0 },
+    { label: "Screening", value: Math.floor((stats?.pipelineCount || 0) * 0.5) }, // Mock logic for visual
+    { label: "Interview", value: stats?.interviewsCount || 0 },
+    { label: "Offer", value: Math.floor((stats?.interviewsCount || 0) * 0.4) }, // Mock logic
+    { label: "Hired", value: stats?.hiresCount || 0 },
+  ];
+
+  if (loading) {
+    return <div className="p-8 text-center text-ink-soft">Loading dashboard...</div>;
+  }
+
   return (
     <div>
       <PageHeader
@@ -38,16 +69,16 @@ export default function Dashboard() {
 
       <Grid className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <GridItem>
-          <StatCard label="Active postings" value={<CountUp to={9} />} delta="+2 this month" icon={<Briefcase size={20} />} />
+          <StatCard label="Active postings" value={<CountUp to={stats?.activePostings || 0} />} delta="Live now" icon={<Briefcase size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Candidates in pipeline" value={<CountUp to={97} />} delta="+18 this week" icon={<Users size={20} />} />
+          <StatCard label="Candidates in pipeline" value={<CountUp to={stats?.pipelineCount || 0} />} delta="Total tracking" icon={<Users size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Interviews scheduled" value={<CountUp to={14} />} delta="5 upcoming" icon={<CalendarCheck size={20} />} />
+          <StatCard label="Interviews scheduled" value={<CountUp to={stats?.interviewsCount || 0} />} delta="Active phase" icon={<CalendarCheck size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Hires this quarter" value={<CountUp to={6} />} delta="+3 vs last" icon={<Trophy size={20} />} />
+          <StatCard label="Hires" value={<CountUp to={stats?.hiresCount || 0} />} delta="Success rate" icon={<Trophy size={20} />} />
         </GridItem>
       </Grid>
 
@@ -58,7 +89,7 @@ export default function Dashboard() {
               <h2 className="text-lg font-semibold text-ink">Applications over time</h2>
               <Badge tone="accent">Last 12 months</Badge>
             </div>
-            <TrendChart data={applications} height={220} />
+            <TrendChart data={stats?.applicationsTrend || [0,0,0,0]} height={220} />
           </Card>
         </motion.div>
 

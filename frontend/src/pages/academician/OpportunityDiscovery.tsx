@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Building2, DollarSign, MapPin, Search } from "lucide-react";
 import {
@@ -11,9 +11,9 @@ import {
   EmptyState,
 } from "../../components/ui";
 import { fadeUp } from "../../lib/motion";
+import { api } from "../../lib/api";
 
-const filters = ["All", "AI & Data", "Healthcare", "Energy", "Materials", "Robotics"] as const;
-type Filter = (typeof filters)[number];
+type Filter = string;
 
 type Opportunity = {
   id: string;
@@ -26,76 +26,52 @@ type Opportunity = {
   match: number;
 };
 
-const opportunities: Opportunity[] = [
-  {
-    id: "op-1",
-    title: "AI-Driven Predictive Maintenance for Wind Turbines",
-    company: "NordVind Energy",
-    domain: "Energy",
-    location: "Copenhagen, DK",
-    tags: ["Machine Learning", "IoT", "Time Series"],
-    funding: "$420K / 18 mo",
-    match: 94,
-  },
-  {
-    id: "op-2",
-    title: "Federated Learning for Clinical Diagnostics",
-    company: "MediCore Labs",
-    domain: "Healthcare",
-    location: "Boston, US",
-    tags: ["Privacy", "Deep Learning", "Imaging"],
-    funding: "$610K / 24 mo",
-    match: 88,
-  },
-  {
-    id: "op-3",
-    title: "Generative Chemistry for Battery Materials",
-    company: "Helios Materials",
-    domain: "Materials",
-    location: "Remote",
-    tags: ["Simulation", "Chemistry", "R&D"],
-    funding: "$350K / 12 mo",
-    match: 81,
-  },
-  {
-    id: "op-4",
-    title: "Autonomous Warehouse Navigation",
-    company: "Loopway Robotics",
-    domain: "Robotics",
-    location: "Munich, DE",
-    tags: ["SLAM", "Reinforcement Learning"],
-    funding: "$500K / 18 mo",
-    match: 77,
-  },
-  {
-    id: "op-5",
-    title: "Foundation Models for Tabular Enterprise Data",
-    company: "Corvus Analytics",
-    domain: "AI & Data",
-    location: "London, UK",
-    tags: ["LLM", "Transfer Learning"],
-    funding: "$540K / 20 mo",
-    match: 90,
-  },
-  {
-    id: "op-6",
-    title: "Wearable Signal Denoising for Cardiac Monitoring",
-    company: "PulseIQ",
-    domain: "Healthcare",
-    location: "Amsterdam, NL",
-    tags: ["Signal Processing", "Edge AI"],
-    funding: "$280K / 12 mo",
-    match: 84,
-  },
-];
-
 export default function OpportunityDiscovery() {
   const [active, setActive] = useState<Filter>("All");
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState<string[]>(["All"]);
+
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const res = await api.get("/opportunities/all");
+        if (res) {
+          const formattedOpps = res.map((o: any) => ({
+            id: o._id,
+            title: o.title,
+            company: o.industryPartner?.companyName || "Industry Partner",
+            domain: o.type, // Map 'type' to 'domain' for now
+            location: o.location || "Remote",
+            tags: o.requiredSkills ? o.requiredSkills.map((s: any) => s.skillName) : [],
+            funding: "TBD", // Mock funding
+            match: Math.floor(Math.random() * 20) + 80 // Mock match score
+          }));
+          setOpportunities(formattedOpps);
+
+          // Extract unique tags to use as filters
+          const allTags = new Set<string>();
+          formattedOpps.forEach((o: Opportunity) => o.tags.forEach((t: string) => allTags.add(t)));
+          setFilters(["All", ...Array.from(allTags).slice(0, 5)]); // top 5 tags
+        }
+      } catch (err) {
+        console.error("Failed to load opportunities", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchOpportunities();
+  }, []);
 
   const visible =
     active === "All"
       ? opportunities
-      : opportunities.filter((o) => o.domain === active);
+      : opportunities.filter((o) => o.tags.includes(active) || o.domain === active);
+
+  if (loading) {
+    return <div className="p-8 text-center text-ink-soft">Loading opportunities...</div>;
+  }
 
   return (
     <div className="space-y-8">

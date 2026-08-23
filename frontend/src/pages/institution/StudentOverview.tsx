@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react";
 import { PageHeader, Card, Avatar, Badge, ProgressBar, Button } from "../../components/ui";
 import { fadeUp, stagger } from "../../lib/motion";
+import { api } from "../../lib/api";
 
 type Status = "Placed" | "Interviewing" | "Available";
 
 interface Student {
-  id: number;
+  id: string;
   name: string;
   department: string;
   year: string;
@@ -15,17 +16,6 @@ interface Student {
   status: Status;
   placement: string;
 }
-
-const students: Student[] = [
-  { id: 1, name: "Amara Okafor", department: "Computer Science", year: "Final", readiness: 96, status: "Placed", placement: "Northwind Labs" },
-  { id: 2, name: "Daniel Reyes", department: "Electronics", year: "Final", readiness: 88, status: "Interviewing", placement: "-" },
-  { id: 3, name: "Priya Nair", department: "Computer Science", year: "Third", readiness: 82, status: "Available", placement: "-" },
-  { id: 4, name: "Lukas Meyer", department: "Mechanical", year: "Final", readiness: 74, status: "Placed", placement: "Ironclad Motors" },
-  { id: 5, name: "Sofia Marchetti", department: "Biotech", year: "Final", readiness: 79, status: "Interviewing", placement: "-" },
-  { id: 6, name: "Kwame Asante", department: "Civil", year: "Third", readiness: 61, status: "Available", placement: "-" },
-  { id: 7, name: "Mei Lin", department: "Computer Science", year: "Final", readiness: 91, status: "Placed", placement: "Vertex Systems" },
-  { id: 8, name: "Ravi Deshmukh", department: "Electronics", year: "Second", readiness: 55, status: "Available", placement: "-" },
-];
 
 const filters = ["All", "Placed", "Interviewing", "Available"] as const;
 
@@ -38,6 +28,19 @@ const statusTone: Record<Status, "primary" | "warning" | "tint"> = {
 export default function StudentOverview() {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState<(typeof filters)[number]>("All");
+  const [students, setStudents] = useState<Student[]>([]);
+
+  useEffect(() => {
+    async function loadStudents() {
+      try {
+        const res = await api.get("/institution/students");
+        setStudents(res || []);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadStudents();
+  }, []);
 
   const visible = students.filter((s) => {
     const matchesQuery =

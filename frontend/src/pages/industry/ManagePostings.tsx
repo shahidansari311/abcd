@@ -4,15 +4,19 @@ import { Eye, Pause, XCircle, Plus } from "lucide-react";
 import { PageHeader, Card, Badge, Button } from "../../components/ui";
 import { fadeUp, stagger } from "../../lib/motion";
 
+import { useState, useEffect } from "react";
+import { api } from "../../lib/api";
+
 type Status = "Open" | "Paused" | "Closed";
 
-const postings: { title: string; status: Status; applicants: number; posted: string; views: number }[] = [
-  { title: "ML Research Intern", status: "Open", applicants: 42, posted: "Aug 2, 2026", views: 1284 },
-  { title: "Data Engineer", status: "Open", applicants: 28, posted: "Jul 24, 2026", views: 967 },
-  { title: "Frontend Engineer", status: "Paused", applicants: 19, posted: "Jul 10, 2026", views: 742 },
-  { title: "Robotics Research Fellow", status: "Open", applicants: 11, posted: "Jul 5, 2026", views: 503 },
-  { title: "Product Analyst", status: "Closed", applicants: 64, posted: "May 18, 2026", views: 2110 },
-];
+interface Posting {
+  _id: string;
+  title: string;
+  status: Status;
+  applicantsCount: number;
+  views: number;
+  createdAt: string;
+}
 
 const tone: Record<Status, "primary" | "warning" | "error"> = {
   Open: "primary",
@@ -21,6 +25,37 @@ const tone: Record<Status, "primary" | "warning" | "error"> = {
 };
 
 export default function ManagePostings() {
+  const [postings, setPostings] = useState<Posting[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPostings();
+  }, []);
+
+  const fetchPostings = async () => {
+    try {
+      const res = await api.get("/opportunities");
+      setPostings(res || []);
+    } catch (error) {
+      console.error("Failed to fetch postings", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async (id: string, newStatus: Status) => {
+    try {
+      await api.patch(`/opportunities/${id}/status`, { status: newStatus });
+      setPostings(postings.map(p => p._id === id ? { ...p, status: newStatus } : p));
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
+  };
+
+  if (loading) {
+    return <div className="p-8 text-center text-ink-soft">Loading postings...</div>;
+  }
+
   return (
     <div>
       <PageHeader
@@ -49,30 +84,44 @@ export default function ManagePostings() {
             </tr>
           </thead>
           <motion.tbody variants={stagger} initial="hidden" animate="show" className="divide-y divide-line">
-            {postings.map((p) => (
-              <motion.tr key={p.title} variants={fadeUp} className="hover:bg-tint/30">
-                <td className="px-5 py-4 font-semibold text-ink">{p.title}</td>
-                <td className="px-5 py-4">
-                  <Badge tone={tone[p.status]}>{p.status}</Badge>
+            {postings.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-8 text-center text-ink-soft">
+                  No postings found.
                 </td>
-                <td className="px-5 py-4 text-ink-soft">{p.applicants}</td>
-                <td className="px-5 py-4 text-ink-soft">{p.posted}</td>
-                <td className="px-5 py-4 text-ink-soft">{p.views.toLocaleString()}</td>
-                <td className="px-5 py-4">
-                  <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Eye size={15} />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Pause size={15} />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <XCircle size={15} />
-                    </Button>
-                  </div>
-                </td>
-              </motion.tr>
-            ))}
+              </tr>
+            ) : (
+              postings.map((p) => (
+                <motion.tr key={p._id} variants={fadeUp} className="hover:bg-tint/30">
+                  <td className="px-5 py-4 font-semibold text-ink">{p.title}</td>
+                  <td className="px-5 py-4">
+                    <Badge tone={tone[p.status]}>{p.status}</Badge>
+                  </td>
+                  <td className="px-5 py-4 text-ink-soft">{p.applicantsCount}</td>
+                  <td className="px-5 py-4 text-ink-soft">{new Date(p.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                  <td className="px-5 py-4 text-ink-soft">{p.views.toLocaleString()}</td>
+                  <td className="px-5 py-4">
+                    <div className="flex justify-end gap-2">
+                      <Link to={`/industry/opportunities/${p._id}`}>
+                        <Button variant="ghost" size="sm">
+                          <Eye size={15} />
+                        </Button>
+                      </Link>
+                      {p.status !== "Paused" && (
+                        <Button variant="ghost" size="sm" onClick={() => handleUpdateStatus(p._id, "Paused")}>
+                          <Pause size={15} />
+                        </Button>
+                      )}
+                      {p.status !== "Closed" && (
+                        <Button variant="ghost" size="sm" onClick={() => handleUpdateStatus(p._id, "Closed")}>
+                          <XCircle size={15} />
+                        </Button>
+                      )}
+                    </div>
+                  </td>
+                </motion.tr>
+              ))
+            )}
           </motion.tbody>
         </table>
       </Card>
@@ -80,7 +129,7 @@ export default function ManagePostings() {
       {/* Stacked cards on mobile */}
       <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-4 md:hidden">
         {postings.map((p) => (
-          <motion.div key={p.title} variants={fadeUp}>
+          <motion.div key={p._id} variants={fadeUp}>
             <Card>
               <div className="flex items-start justify-between gap-3">
                 <h3 className="font-semibold text-ink">{p.title}</h3>
@@ -89,7 +138,7 @@ export default function ManagePostings() {
               <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
                 <div>
                   <p className="text-xs text-ink-soft">Applicants</p>
-                  <p className="font-semibold text-ink">{p.applicants}</p>
+                  <p className="font-semibold text-ink">{p.applicantsCount}</p>
                 </div>
                 <div>
                   <p className="text-xs text-ink-soft">Views</p>
@@ -97,19 +146,25 @@ export default function ManagePostings() {
                 </div>
                 <div>
                   <p className="text-xs text-ink-soft">Posted</p>
-                  <p className="font-semibold text-ink">{p.posted}</p>
+                  <p className="font-semibold text-ink">{new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
                 </div>
               </div>
               <div className="mt-4 flex gap-2">
-                <Button variant="outline" size="sm">
-                  <Eye size={15} /> View
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <Pause size={15} /> Pause
-                </Button>
-                <Button variant="ghost" size="sm">
-                  <XCircle size={15} /> Close
-                </Button>
+                <Link to={`/industry/opportunities/${p._id}`}>
+                  <Button variant="outline" size="sm">
+                    <Eye size={15} /> View
+                  </Button>
+                </Link>
+                {p.status !== "Paused" && (
+                  <Button variant="ghost" size="sm" onClick={() => handleUpdateStatus(p._id, "Paused")}>
+                    <Pause size={15} /> Pause
+                  </Button>
+                )}
+                {p.status !== "Closed" && (
+                  <Button variant="ghost" size="sm" onClick={() => handleUpdateStatus(p._id, "Closed")}>
+                    <XCircle size={15} /> Close
+                  </Button>
+                )}
               </div>
             </Card>
           </motion.div>

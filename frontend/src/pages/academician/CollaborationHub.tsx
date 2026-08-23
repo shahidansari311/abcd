@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CalendarClock, MessageSquare } from "lucide-react";
 import {
@@ -11,6 +12,7 @@ import {
   GridItem,
 } from "../../components/ui";
 import { fadeUp, stagger } from "../../lib/motion";
+import { api } from "../../lib/api";
 
 type Status = "On track" | "At risk" | "Kickoff";
 const statusTone: Record<Status, "primary" | "warning" | "accent"> = {
@@ -19,35 +21,15 @@ const statusTone: Record<Status, "primary" | "warning" | "accent"> = {
   Kickoff: "accent",
 };
 
-const collaborations = [
-  {
-    id: "c-1",
-    company: "NordVind Energy",
-    project: "Predictive Maintenance Pilot",
-    status: "On track" as Status,
-    progress: 68,
-    team: ["Elena Reyes", "Sam Okoye", "Priya Nair"],
-    deadline: "Milestone 3 · Sep 12",
-  },
-  {
-    id: "c-2",
-    company: "MediCore Labs",
-    project: "Federated Diagnostics",
-    status: "At risk" as Status,
-    progress: 41,
-    team: ["Elena Reyes", "Jonas Weber"],
-    deadline: "Data agreement · Aug 30",
-  },
-  {
-    id: "c-3",
-    company: "Corvus Analytics",
-    project: "Tabular Foundation Models",
-    status: "Kickoff" as Status,
-    progress: 12,
-    team: ["Elena Reyes", "Lena Fischer", "Amir Haddad"],
-    deadline: "Scope review · Aug 26",
-  },
-];
+type Collaboration = {
+  id: string;
+  company: string;
+  project: string;
+  status: Status;
+  progress: number;
+  team: string[];
+  deadline: string;
+};
 
 const activity = [
   { who: "Sam Okoye", text: "pushed evaluation results for turbine dataset v2", time: "10m ago" },
@@ -58,6 +40,38 @@ const activity = [
 ];
 
 export default function CollaborationHub() {
+  const [collaborations, setCollaborations] = useState<Collaboration[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      try {
+        const res = await api.get("/workspaces");
+        if (res) {
+          const formatted = res.map((ws: any) => ({
+            id: ws._id,
+            company: ws.opportunity?.industryPartner?.companyName || "Industry Partner",
+            project: ws.title || ws.opportunity?.title || "Untitled Project",
+            status: "On track", // Mock status
+            progress: Math.floor(Math.random() * 100), // Mock progress
+            team: ws.members ? ws.members.map((m: any) => `${m.firstName} ${m.lastName}`) : [],
+            deadline: "Ongoing"
+          }));
+          setCollaborations(formatted);
+        }
+      } catch (err) {
+        console.error("Failed to load workspaces", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchWorkspaces();
+  }, []);
+
+  if (loading) {
+    return <div className="p-8 text-center text-ink-soft">Loading collaborations...</div>;
+  }
+
   return (
     <div className="space-y-8">
       <PageHeader

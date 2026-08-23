@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FileText, Download, RefreshCw, TrendingUp, Layers, Users, Handshake } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, Badge, Button } from "../../components/ui";
 import { BarList } from "../../components/charts";
 import { fadeUp, stagger } from "../../lib/motion";
+import { api } from "../../lib/api";
 
 const templates = [
   {
@@ -36,13 +37,7 @@ const templates = [
   },
 ];
 
-const previewData = [
-  { label: "Computer Science", value: 94 },
-  { label: "Electronics", value: 81 },
-  { label: "Mechanical", value: 72 },
-  { label: "Biotech", value: 69 },
-  { label: "Civil", value: 63 },
-];
+
 
 const departments = ["All departments", "Computer Science", "Electronics", "Mechanical", "Civil", "Biotech"];
 
@@ -50,6 +45,21 @@ export default function Reports() {
   const [dept, setDept] = useState(departments[0]);
   const [from, setFrom] = useState("2026-01");
   const [to, setTo] = useState("2026-08");
+  const [previewData, setPreviewData] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const res = await api.get("/institution/stats");
+        if (res?.readinessByDept) {
+          setPreviewData(res.readinessByDept);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadData();
+  }, []);
 
   const selectClass =
     "w-full rounded-2xl border border-line bg-surface px-4 py-2.5 text-ink outline-none focus:border-primary";

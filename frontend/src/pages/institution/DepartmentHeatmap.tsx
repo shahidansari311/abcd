@@ -1,22 +1,27 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Layers, Flame, Sparkles } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, StatCard, Badge } from "../../components/ui";
 import { HeatmapChart } from "../../components/charts";
 import CountUp from "../../components/CountUp";
 import { fadeUp } from "../../lib/motion";
-
-const rows = ["Computer Science", "Electronics", "Mechanical", "Civil", "Biotech"];
-const cols = ["Technical", "Communication", "Problem Solving", "Teamwork", "Leadership", "Domain"];
-
-const data = [
-  [95, 78, 90, 82, 74, 88],
-  [84, 72, 80, 76, 68, 81],
-  [71, 66, 74, 79, 62, 77],
-  [63, 70, 61, 74, 58, 69],
-  [76, 68, 72, 71, 64, 85],
-];
+import { api } from "../../lib/api";
 
 export default function DepartmentHeatmap() {
+  const [heatmap, setHeatmap] = useState<{rows: string[], cols: string[], data: number[][]}>({ rows: [], cols: [], data: [] });
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const res = await api.get("/institution/heatmap");
+        setHeatmap(res || { rows: [], cols: [], data: [] });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadData();
+  }, []);
+
   return (
     <div>
       <PageHeader
@@ -26,13 +31,13 @@ export default function DepartmentHeatmap() {
 
       <Grid className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
         <GridItem>
-          <StatCard label="Departments tracked" value={<CountUp to={5} />} icon={<Layers size={20} />} />
+          <StatCard label="Departments tracked" value={<CountUp to={heatmap.rows.length} />} icon={<Layers size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Strongest area" value="Technical" delta="CS 95%" icon={<Flame size={20} />} />
+          <StatCard label="Strongest area" value={heatmap.cols.length > 0 ? heatmap.cols[0] : "N/A"} delta="Current" icon={<Flame size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Growth focus" value="Leadership" delta="Avg 65%" icon={<Sparkles size={20} />} />
+          <StatCard label="Growth focus" value={heatmap.cols.length > 0 ? heatmap.cols[1] || "N/A" : "N/A"} delta="Current" icon={<Sparkles size={20} />} />
         </GridItem>
       </Grid>
 
@@ -43,7 +48,11 @@ export default function DepartmentHeatmap() {
             <Badge tone="accent">Scored 0 - 100</Badge>
           </div>
 
-          <HeatmapChart rows={rows} cols={cols} data={data} />
+          {heatmap.rows.length > 0 ? (
+            <HeatmapChart rows={heatmap.rows} cols={heatmap.cols} data={heatmap.data} />
+          ) : (
+            <p className="py-8 text-center text-ink-soft">Loading heatmap data...</p>
+          )}
 
           <div className="mt-6 flex items-center gap-3 text-sm text-ink-soft">
             <span>Low</span>

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, X, ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { PageHeader, Card, Badge, Button, ProgressBar } from "../../components/ui";
 import { EASE } from "../../lib/motion";
+import { api } from "../../lib/api";
+import { useNavigate } from "react-router";
 
 const STEPS = ["Basics", "Requirements", "Review"];
 
@@ -19,11 +21,38 @@ export default function PostOpportunity() {
   const [skillInput, setSkillInput] = useState("");
   const [experience, setExperience] = useState("0-2 years");
   const [salary, setSalary] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const addSkill = () => {
     const s = skillInput.trim();
     if (s && !skills.includes(s)) setSkills([...skills, s]);
     setSkillInput("");
+  };
+
+  const handlePublish = async () => {
+    try {
+      setLoading(true);
+      const payloadType = type.toLowerCase() === "internship" ? "internship" : 
+                          type.toLowerCase() === "full-time" ? "job" : "project";
+      
+      const payload = {
+        title,
+        description,
+        type: payloadType,
+        location,
+        requiredSkills: skills.map(s => ({ skillName: s, minimumScore: 60 })), // default minimum score for now
+      };
+
+      await api.post("/opportunities", payload);
+      alert("Opportunity published successfully!");
+      navigate("/industry");
+    } catch (error) {
+      console.error("Failed to publish", error);
+      alert("Failed to publish opportunity. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -173,8 +202,8 @@ export default function PostOpportunity() {
               Continue <ArrowRight size={16} />
             </Button>
           ) : (
-            <Button variant="secondary">
-              <Check size={16} /> Publish
+            <Button variant="secondary" onClick={handlePublish} disabled={loading}>
+              <Check size={16} /> {loading ? "Publishing..." : "Publish"}
             </Button>
           )}
         </div>

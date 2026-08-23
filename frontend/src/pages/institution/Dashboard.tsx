@@ -7,29 +7,24 @@ import CountUp from "../../components/CountUp";
 import { fadeUp, stagger } from "../../lib/motion";
 import { api } from "../../lib/api";
 
-const placementsByYear = [182, 214, 241, 268, 297, 331, 372, 418];
-
-const readinessByDept = [
-  { label: "Computer Science", value: 88 },
-  { label: "Electronics", value: 79 },
-  { label: "Mechanical", value: 71 },
-  { label: "Civil", value: 64 },
-  { label: "Biotech", value: 68 },
-];
-
 export default function Dashboard() {
   const [gaps, setGaps] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
-    const fetchGaps = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/institution/skill-gaps");
-        if (res?.gaps) setGaps(res.gaps.slice(0, 5)); // Show top 5 gaps
+        const [gapsRes, statsRes] = await Promise.all([
+          api.get("/institution/skill-gaps"),
+          api.get("/institution/stats")
+        ]);
+        if (gapsRes?.gaps) setGaps(gapsRes.gaps.slice(0, 5));
+        setStats(statsRes);
       } catch (error) {
-        console.error("Failed to load gaps", error);
+        console.error("Failed to load dashboard data", error);
       }
     };
-    fetchGaps();
+    fetchData();
   }, []);
 
   return (
@@ -42,16 +37,16 @@ export default function Dashboard() {
 
       <Grid className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <GridItem>
-          <StatCard label="Total students" value={<CountUp to={4820} />} delta="+312 this year" icon={<Users size={20} />} />
+          <StatCard label="Total students" value={<CountUp to={stats?.totalStudents || 0} />} delta="Active" icon={<Users size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Placement rate" value={<CountUp to={87} suffix="%" />} delta="+4% YoY" icon={<TrendingUp size={20} />} />
+          <StatCard label="Placement rate" value={<CountUp to={stats?.placementRate || 0} suffix="%" />} delta="Projected" icon={<TrendingUp size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Industry partners" value={<CountUp to={126} />} delta="+18 new" icon={<Building2 size={20} />} />
+          <StatCard label="Industry partners" value={<CountUp to={stats?.industryPartners || 0} />} delta="Registered" icon={<Building2 size={20} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Avg readiness" value={<CountUp to={74} suffix="%" />} delta="+6 pts" icon={<Gauge size={20} />} />
+          <StatCard label="Avg readiness" value={<CountUp to={stats?.avgReadiness || 0} suffix="%" />} delta="Current" icon={<Gauge size={20} />} />
         </GridItem>
       </Grid>
 
@@ -115,7 +110,7 @@ export default function Dashboard() {
         <motion.div variants={fadeUp} initial="hidden" animate="show">
           <Card className="h-full">
             <h2 className="mb-4 text-lg font-semibold text-ink">Readiness by department</h2>
-            <BarList data={readinessByDept} />
+            <BarList data={stats?.readinessByDept || []} />
           </Card>
         </motion.div>
       </div>

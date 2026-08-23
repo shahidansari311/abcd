@@ -1,28 +1,26 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { IndianRupee, Award, FileCheck, Building } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, StatCard, Badge, ProgressBar } from "../../components/ui";
 import { TrendChart, BarList } from "../../components/charts";
 import CountUp from "../../components/CountUp";
 import { fadeUp } from "../../lib/motion";
-
-const placementTrend = [68, 71, 74, 76, 79, 82, 85, 87];
-
-const offersBySector = [
-  { label: "Software / IT", value: 214 },
-  { label: "Analytics", value: 118 },
-  { label: "Core Engineering", value: 96 },
-  { label: "Consulting", value: 64 },
-  { label: "Biotech / Pharma", value: 41 },
-];
-
-const funnel = [
-  { label: "Registered", value: 100 },
-  { label: "Eligible", value: 84 },
-  { label: "Interviewed", value: 61 },
-  { label: "Placed", value: 48 },
-];
+import { api } from "../../lib/api";
 
 export default function PlacementAnalytics() {
+  const [data, setData] = useState<any>(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const res = await api.get("/institution/placements");
+        setData(res);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadData();
+  }, []);
   return (
     <div>
       <PageHeader title="Placement Analytics" subtitle="Outcomes, packages, and funnel performance" />
@@ -49,14 +47,14 @@ export default function PlacementAnalytics() {
               <h2 className="text-lg font-semibold text-ink">Placement rate trend</h2>
               <Badge tone="accent">% placed</Badge>
             </div>
-            <TrendChart data={placementTrend} />
+            <TrendChart data={data?.placementTrend || []} />
           </Card>
         </motion.div>
 
         <motion.div variants={fadeUp} initial="hidden" animate="show">
           <Card>
             <h2 className="mb-4 text-lg font-semibold text-ink">Offers by sector</h2>
-            <BarList data={offersBySector} />
+            <BarList data={data?.offersBySector || []} />
           </Card>
         </motion.div>
       </div>
@@ -68,7 +66,7 @@ export default function PlacementAnalytics() {
             <Badge tone="primary">Conversion 48%</Badge>
           </div>
           <div className="space-y-5">
-            {funnel.map((step) => (
+            {data?.funnel?.map((step: any) => (
               <div key={step.label}>
                 <div className="mb-1.5 flex items-center justify-between text-sm">
                   <span className="font-medium text-ink">{step.label}</span>

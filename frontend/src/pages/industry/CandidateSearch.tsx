@@ -1,25 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Search, X } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, Badge, Avatar, Button } from "../../components/ui";
 import { CompatibilityScore } from "../../components/charts";
+import { api } from "../../lib/api";
 
-const allCandidates = [
-  { id: 1, name: "Amara Okafor", headline: "ML researcher • Stanford", location: "Remote", skills: ["Python", "PyTorch", "NLP"], match: 96 },
-  { id: 1, name: "Daniel Reyes", headline: "Data engineer • MIT", location: "Austin", skills: ["SQL", "Spark", "Airflow"], match: 92 },
-  { id: 1, name: "Priya Nair", headline: "Frontend engineer • CMU", location: "Remote", skills: ["React", "TypeScript", "CSS"], match: 89 },
-  { id: 1, name: "Lukas Meyer", headline: "Product analyst • ETH", location: "Berlin", skills: ["SQL", "Python", "Tableau"], match: 85 },
-  { id: 1, name: "Zoe Bennett", headline: "Robotics fellow • Berkeley", location: "Austin", skills: ["C++", "ROS", "Python"], match: 82 },
-  { id: 1, name: "Kenji Tanaka", headline: "ML engineer • Waterloo", location: "Remote", skills: ["PyTorch", "NLP", "Python"], match: 79 },
-];
-
-const skillFilters = ["Python", "PyTorch", "React", "SQL", "NLP"];
-const locationFilters = ["Remote", "Austin", "Berlin"];
+type Candidate = {
+  id: string;
+  name: string;
+  headline: string;
+  location: string;
+  skills: string[];
+  match: number;
+};
 
 export default function CandidateSearch() {
+  const [allCandidates, setAllCandidates] = useState<Candidate[]>([]);
+  const [skillFilters, setSkillFilters] = useState<string[]>([]);
+  const [locationFilters, setLocationFilters] = useState<string[]>([]);
+  
   const [query, setQuery] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
   const [locations, setLocations] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      try {
+        const res = await api.get("/industry/candidates");
+        if (res) {
+          const mapped = res.map((p: any) => ({
+            id: p.student?._id,
+            name: `${p.student?.firstName || 'Unknown'} ${p.student?.lastName || ''}`,
+            headline: p.degree ? `${p.degree} Student` : "Student",
+            location: "Remote", // Mock location for now
+            skills: p.skills ? p.skills.map((s: any) => s.name) : [],
+            match: Math.floor(Math.random() * 20) + 80, // Mock score
+          }));
+          setAllCandidates(mapped);
+
+          // Extract unique filters
+          const allSkills = new Set<string>();
+          mapped.forEach((c: Candidate) => c.skills.forEach(s => allSkills.add(s)));
+          setSkillFilters(Array.from(allSkills).slice(0, 8)); // Top 8 skills
+          setLocationFilters(["Remote", "On-site"]);
+        }
+      } catch (err) {
+        console.error("Failed to load candidates", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCandidates();
+  }, []);
 
   const toggle = (arr: string[], set: (v: string[]) => void, v: string) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -31,6 +64,8 @@ export default function CandidateSearch() {
     const matchLoc = locations.length === 0 || locations.includes(c.location);
     return matchQ && matchSkill && matchLoc;
   });
+
+  if (loading) return <div className="p-8 text-center text-ink-soft">Loading candidates...</div>;
 
   return (
     <div>
