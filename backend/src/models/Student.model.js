@@ -6,6 +6,8 @@ const studentSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   institution: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   degree: { type: String },
+  major: { type: String },
+  location: { type: String, default: 'Remote' },
   graduationYear: { type: Number },
   skillProfileRef: { type: mongoose.Schema.Types.ObjectId, ref: 'SkillProfile' },
   resumeUrl: { type: String },
@@ -42,6 +44,17 @@ const studentSchema = new mongoose.Schema({
   preferredRoles: [{ type: String }],
   preferredLocations: [{ type: String }],
   availability: { type: String }
+  targetRole: { type: String },
+  careerRoadmap: [{
+    title: { type: String },
+    status: { type: String, enum: ['done', 'current', 'upcoming'] },
+    desc: { type: String }
+  }],
+  momentumStreak: { type: Number, default: 0 },
+  momentumShields: { type: Number, default: 0 },
+  weeklyPaceGoal: { type: Number, default: 50 },
+  weeklyPaceProgress: { type: Number, default: 0 },
+  lastMomentumUpdate: { type: Date }
 });
 
 const Student = User.discriminator('student', studentSchema);

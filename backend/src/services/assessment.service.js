@@ -1,10 +1,30 @@
 const Assessment = require('../models/Assessment.model');
 const AssessmentResult = require('../models/AssessmentResult.model');
 const SkillProfile = require('../models/SkillProfile.model');
+const Student = require('../models/Student.model');
 const ApiError = require('../utils/apiError');
+const momentumService = require('./momentum.service');
 
-const getAvailableAssessments = async () => {
-  return Assessment.find({ isActive: true }).select('-questions.correctAnswer');
+const getAvailableAssessments = async (studentId) => {
+  if (studentId) {
+    const student = await Student.findById(studentId);
+    if (student && student.careerRoadmap && student.careerRoadmap.length > 0) {
+      const targetRole = student.targetRole || 'Data Scientist';
+      const roleAssessments = await Assessment.find({ isActive: true, targetRole }).select('-questions.correctAnswer');
+      if (roleAssessments.length > 0) {
+        return { context: 'roadmap', targetRole, assessments: roleAssessments };
+      }
+    }
+  }
+
+  const demoAssessments = await Assessment.find({ isActive: true, targetRole: 'demo' }).select('-questions.correctAnswer');
+  
+  if (demoAssessments.length === 0) {
+    const all = await Assessment.find({ isActive: true }).select('-questions.correctAnswer');
+    return { context: 'demo', assessments: all };
+  }
+  
+  return { context: 'demo', assessments: demoAssessments };
 };
 
 const getAssessmentById = async (id) => {
@@ -70,6 +90,10 @@ const submitAssessment = async (studentId, assessmentId, answers) => {
 
   skillProfile.lastRecomputedAt = new Date();
   await skillProfile.save();
+
+  // Add Momentum Points (e.g., 20 points per assessment, bonus for passing)
+  const momentumPoints = percentage > 70 ? 30 : 15;
+  await momentumService.addMomentum(studentId, momentumPoints);
 
   return result;
 };

@@ -2,8 +2,8 @@ const assessmentService = require('../services/assessment.service');
 const apiResponse = require('../utils/apiResponse');
 
 const getAvailableAssessments = async (req, res) => {
-  const assessments = await assessmentService.getAvailableAssessments();
-  return apiResponse(res, 200, true, 'Assessments fetched successfully', assessments);
+  const result = await assessmentService.getAvailableAssessments(req.user.id);
+  return apiResponse(res, 200, true, 'Assessments fetched successfully', result);
 };
 
 const getAssessmentById = async (req, res) => {

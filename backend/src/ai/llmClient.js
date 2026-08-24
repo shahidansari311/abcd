@@ -40,7 +40,7 @@ const generateCompletion = async (prompt, options = {}) => {
           content: prompt
         }
       ],
-      model: 'openai/gpt-oss-20b',
+      model: 'llama3-8b-8192',
       temperature: 0.7,
       max_tokens: 1024,
       response_format: prompt.includes('roadmap') ? { type: 'json_object' } : { type: 'text' }
@@ -53,7 +53,7 @@ const generateCompletion = async (prompt, options = {}) => {
   }
 };
 
-const getGroqChatCompletion = async (messages) => {
+const getGroqChatCompletion = async (messages, options = {}) => {
   if (!env.GROQ_API_KEY) {
     console.warn("WARNING: No GROQ_API_KEY found. Falling back to mock LLM.");
     return {
@@ -62,9 +62,10 @@ const getGroqChatCompletion = async (messages) => {
   }
   return groq.chat.completions.create({
     messages,
-    model: 'openai/gpt-oss-20b',
+    model: 'llama3-8b-8192',
     temperature: 0.7,
     max_tokens: 1024,
+    ...options
   });
 };
 

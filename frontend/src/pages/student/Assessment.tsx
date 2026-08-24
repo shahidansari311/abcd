@@ -28,6 +28,8 @@ type FullAssessment = Assessment & {
 export default function AssessmentPage() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loadingList, setLoadingList] = useState(true);
+  const [context, setContext] = useState<string>("demo");
+  const [targetRole, setTargetRole] = useState<string>("");
 
   // Active Assessment State
   const [activeAssessment, setActiveAssessment] = useState<FullAssessment | null>(null);
@@ -43,7 +45,11 @@ export default function AssessmentPage() {
     async function fetchAssessments() {
       try {
         const res = await api.get("/assessment");
-        if (res && Array.isArray(res)) {
+        if (res && res.assessments) {
+          setAssessments(res.assessments);
+          setContext(res.context);
+          setTargetRole(res.targetRole || "");
+        } else if (res && Array.isArray(res)) {
           setAssessments(res);
         }
       } catch (err) {
@@ -101,8 +107,8 @@ export default function AssessmentPage() {
   return (
     <div>
       <PageHeader
-        title="Skill assessments"
-        subtitle="Measure your abilities and unlock verified credentials."
+        title={context === "roadmap" ? `Assessments for ${targetRole}` : "Demo Assessments"}
+        subtitle={context === "roadmap" ? "Personalized skill assessments based on your career roadmap." : "Try these demo assessments. Generate a Career Roadmap to unlock personalized skill tests!"}
       />
 
       {loadingList ? (

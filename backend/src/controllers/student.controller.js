@@ -3,6 +3,8 @@ const apiResponse = require('../utils/apiResponse');
 const { getGroqChatCompletion } = require('../ai/llmClient');
 const SkillProfile = require('../models/SkillProfile.model');
 const Opportunity = require('../models/Opportunity.model');
+const Student = require('../models/Student.model');
+const momentumService = require('../services/momentum.service');
 
 const getProfile = async (req, res) => {
   const student = await studentService.getProfile(req.user.id);
@@ -86,7 +88,12 @@ const simulateReadiness = async (req, res) => {
 
 const generateRoadmap = async (req, res) => {
   const studentId = req.user.id;
-  const student = await studentService.getProfile(studentId);
+  const student = await Student.findById(studentId);
+  
+  if (student.careerRoadmap && student.careerRoadmap.length > 0) {
+    return apiResponse(res, 200, true, 'Roadmap fetched from profile', student.careerRoadmap);
+  }
+
   const skillProfile = await SkillProfile.findOne({ student: studentId });
 
   const skillsContext = skillProfile && skillProfile.skills.length > 0 
@@ -94,24 +101,31 @@ const generateRoadmap = async (req, res) => {
     : 'No skills added yet.';
 
   const systemPrompt = `You are an expert AI Career Advisor for ${student.firstName}. 
-Generate a JSON array of exact 5 career milestones for them to reach a Data Scientist or related role.
+Generate a JSON object with a single key "roadmap" containing an array of exact 5 career milestones for them to reach a Data Scientist or related role.
 Their current skills: ${skillsContext}.
-Return ONLY a valid JSON array of objects with the exact structure:
-[
-  { "title": "Milestone Name", "status": "done" | "current" | "upcoming", "desc": "Brief 1-sentence description" }
-]
-At least one should be "current". Prioritize what they are lacking.`;
+Return ONLY a valid JSON object with the exact structure:
+{
+  "roadmap": [
+    { "title": "Milestone Name", "status": "done" | "current" | "upcoming", "desc": "Brief 1-sentence description" }
+  ]
+}
+At least one milestone should be "current". Prioritize what they are lacking.`;
 
   try {
-    const aiResponse = await getGroqChatCompletion([{ role: 'system', content: systemPrompt }]);
-    const replyText = aiResponse.choices[0]?.message?.content || "[]";
-    const jsonMatch = replyText.match(/\[.*\]/s);
-    let milestones = [];
-    if (jsonMatch) {
-      milestones = JSON.parse(jsonMatch[0]);
-    } else {
-      milestones = JSON.parse(replyText);
-    }
+    const aiResponse = await getGroqChatCompletion(
+      [{ role: 'system', content: systemPrompt }], 
+      { response_format: { type: 'json_object' } }
+    );
+    const replyText = aiResponse.choices[0]?.message?.content || '{"roadmap": []}';
+    const parsedData = JSON.parse(replyText);
+    const milestones = parsedData.roadmap || [];
+    
+    student.careerRoadmap = milestones;
+    student.targetRole = "Data Scientist";
+    await student.save();
+
+    await momentumService.addMomentum(studentId, 50); // Big boost for setting a roadmap
+
     return apiResponse(res, 200, true, 'Roadmap generated', milestones);
   } catch (err) {
     console.error("Groq Error (Roadmap):", err);
@@ -123,6 +137,13 @@ At least one should be "current". Prioritize what they are lacking.`;
       { title: "Interviews", status: "upcoming", desc: "Prepare for mock interviews." },
       { title: "Job Offer", status: "upcoming", desc: "Land your target role." }
     ];
+    
+    student.careerRoadmap = fallback;
+    student.targetRole = "Data Scientist";
+    await student.save();
+    
+    await momentumService.addMomentum(studentId, 50);
+
     return apiResponse(res, 200, true, 'Roadmap generated', fallback);
   }
 };
@@ -225,6 +246,11 @@ const getPassport = async (req, res) => {
   });
 };
 
+const getMomentum = async (req, res) => {
+  const data = await momentumService.getMomentum(req.user.id);
+  return apiResponse(res, 200, true, 'Momentum fetched', data);
+};
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -233,4 +259,5 @@ module.exports = {
   generateRoadmap,
   getSkillGap,
   getPassport,
+  getMomentum,
 };
