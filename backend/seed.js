@@ -4,6 +4,7 @@ const env = require('./src/config/env');
 const User = require('./src/models/User.model');
 const Student = require('./src/models/Student.model');
 const Industry = require('./src/models/Industry.model');
+const Institution = require('./src/models/Institution.model');
 const SkillProfile = require('./src/models/SkillProfile.model');
 const Assessment = require('./src/models/Assessment.model');
 const AssessmentResult = require('./src/models/AssessmentResult.model');
@@ -33,7 +34,22 @@ const seedDB = async () => {
       website: 'https://techcorp.com'
     });
 
-    // 2. Create Student Demo User
+    // 2. Create Institution User
+    const institutionUser = await Institution.create({
+      email: 'admin@stateuniversity.edu',
+      passwordHash: 'password123',
+      role: 'institution',
+      isEmailVerified: true,
+      institutionName: 'State University',
+      type: 'university',
+      website: 'https://stateuniversity.edu',
+      accreditationBody: 'NAAC A+',
+      departments: ['Computer Science', 'Electronics', 'Mechanical', 'Civil', 'Data Science'],
+      isVerified: true,
+    });
+    console.log('Institution user created:', institutionUser.email);
+
+    // 3. Create Student Demo User
     const studentUser = await Student.create({
       email: 'demo@skillbridge.com',
       passwordHash: 'password123',
@@ -42,8 +58,11 @@ const seedDB = async () => {
       firstName: 'Maya',
       lastName: 'Patel',
       degree: 'B.S. Computer Science',
+      major: 'Computer Science',
+      location: 'Bengaluru, India',
       graduationYear: 2025,
-      readinessScore: 74
+      readinessScore: 74,
+      institution: institutionUser._id,
     });
 
     // 3. Create Skill Profile for Student

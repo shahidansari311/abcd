@@ -6,6 +6,8 @@ const studentSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   institution: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   degree: { type: String },
+  major: { type: String },
+  location: { type: String, default: 'Remote' },
   graduationYear: { type: Number },
   skillProfileRef: { type: mongoose.Schema.Types.ObjectId, ref: 'SkillProfile' },
   resumeUrl: { type: String },

@@ -57,10 +57,12 @@ import APortfolio from "./pages/academician/Portfolio";
 
 // Institution
 import NDashboard from "./pages/institution/Dashboard";
+import NProfile from "./pages/institution/Profile";
 import NStudents from "./pages/institution/StudentOverview";
 import NHeatmap from "./pages/institution/DepartmentHeatmap";
 import NPlacements from "./pages/institution/PlacementAnalytics";
 import NPartners from "./pages/institution/IndustryPartners";
+import NPartnerReview from "./pages/institution/PartnerReview";
 import NReports from "./pages/institution/Reports";
 
 const router = createBrowserRouter([
@@ -140,10 +142,12 @@ const router = createBrowserRouter([
     element: <DashboardLayout role="institution" />,
     children: [
       { index: true, Component: NDashboard },
+      { path: "profile", Component: NProfile },
       { path: "students", Component: NStudents },
       { path: "heatmap", Component: NHeatmap },
       { path: "placements", Component: NPlacements },
       { path: "partners", Component: NPartners },
+      { path: "partners/:id", Component: NPartnerReview },
       { path: "reports", Component: NReports },
       { path: "notifications", Component: Notifications },
     ],

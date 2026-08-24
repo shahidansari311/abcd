@@ -31,11 +31,11 @@ export default function CandidateSearch() {
         if (res) {
           const mapped = res.map((p: any) => ({
             id: p.student?._id,
-            name: `${p.student?.firstName || 'Unknown'} ${p.student?.lastName || ''}`,
-            headline: p.degree ? `${p.degree} Student` : "Student",
-            location: "Remote", // Mock location for now
+            name: `${p.student?.firstName || 'Unknown'} ${p.student?.lastName || ''}`.trim(),
+            headline: p.degree || (p.student?.major ? `${p.student.major} Student` : 'Student'),
+            location: p.location || p.student?.location || 'Remote',
             skills: p.skills ? p.skills.map((s: any) => s.name) : [],
-            match: Math.floor(Math.random() * 20) + 80, // Mock score
+            match: p.matchScore ?? p.student?.readinessScore ?? 0,
           }));
           setAllCandidates(mapped);
 

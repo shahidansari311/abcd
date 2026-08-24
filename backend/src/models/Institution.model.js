@@ -10,6 +10,6 @@ const institutionSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
 });
 
-const Institution = User.discriminator('institution_admin', institutionSchema);
+const Institution = User.discriminator('institution', institutionSchema);
 
 module.exports = Institution;

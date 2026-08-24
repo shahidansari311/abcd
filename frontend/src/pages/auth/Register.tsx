@@ -8,7 +8,7 @@ const roles = [
   { key: "student", icon: GraduationCap, name: "Student", desc: "Grow skills & find opportunities" },
   { key: "industry", icon: Building2, name: "Industry", desc: "Hire verified talent" },
   { key: "academician", icon: BookOpen, name: "Academician", desc: "Collaborate & research" },
-  { key: "institution_admin", icon: Landmark, name: "Institution", desc: "Track cohort outcomes" },
+  { key: "institution", icon: Landmark, name: "Institution", desc: "Track cohort outcomes" },
 ];
 
 const field =
@@ -54,7 +54,7 @@ export default function Register() {
 
       if (role === "industry") {
         payload.companyName = companyName;
-      } else if (role === "institution_admin") {
+      } else if (role === "institution") {
         payload.institutionName = institutionName;
       }
 
@@ -63,7 +63,7 @@ export default function Register() {
       localStorage.setItem("role", data.user.role);
       
       setStatus("success");
-      setTimeout(() => nav(`/${role ?? "student"}`), 1000);
+      setTimeout(() => nav(`/${data.user.role ?? "student"}`), 1000);
     } catch (err: any) {
       setError(err.message || "Registration failed. Please try again.");
       setStatus("idle");
@@ -155,7 +155,7 @@ export default function Register() {
                       <input className={field} placeholder="Acme Corp" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
                     </div>
                   )}
-                  {role === "institution_admin" && (
+                  {role === "institution" && (
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-ink">Institution Name</label>
                       <input className={field} placeholder="State University" value={institutionName} onChange={(e) => setInstitutionName(e.target.value)} />
@@ -199,7 +199,7 @@ export default function Register() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                disabled={(step === 0 && !role) || (step === 1 && (!name || !email || password.length < 8 || (role === "industry" && !companyName) || (role === "institution_admin" && !institutionName)))}
+                disabled={(step === 0 && !role) || (step === 1 && (!name || !email || password.length < 8 || (role === "industry" && !companyName) || (role === "institution" && !institutionName)))}
                 onClick={() => go(step + 1)}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all hover:bg-primary-dark disabled:opacity-50"
               >

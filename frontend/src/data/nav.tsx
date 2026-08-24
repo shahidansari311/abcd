@@ -81,6 +81,7 @@ export const roleNav: Record<RoleKey, NavItem[]> = {
   ],
   institution: [
     { label: "Dashboard", to: "/institution", icon: <LayoutDashboard size={18} /> },
+    { label: "Profile", to: "/institution/profile", icon: <UserCircle size={18} /> },
     { label: "Student Overview", to: "/institution/students", icon: <GraduationCap size={18} /> },
     { label: "Department Heatmap", to: "/institution/heatmap", icon: <Grid3x3 size={18} /> },
     { label: "Placement Analytics", to: "/institution/placements", icon: <TrendingUp size={18} /> },
