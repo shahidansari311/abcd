@@ -13,7 +13,18 @@ const studentSchema = new mongoose.Schema({
   readinessHistory: [{
     score: { type: Number },
     date: { type: Date, default: Date.now }
-  }]
+  }],
+  targetRole: { type: String },
+  careerRoadmap: [{
+    title: { type: String },
+    status: { type: String, enum: ['done', 'current', 'upcoming'] },
+    desc: { type: String }
+  }],
+  momentumStreak: { type: Number, default: 0 },
+  momentumShields: { type: Number, default: 0 },
+  weeklyPaceGoal: { type: Number, default: 50 },
+  weeklyPaceProgress: { type: Number, default: 0 },
+  lastMomentumUpdate: { type: Date }
 });
 
 const Student = User.discriminator('student', studentSchema);
