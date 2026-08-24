@@ -1,0 +1,17 @@
+# Backend Development: Judge Evaluation Q&A
+
+**Q1: Can you walk me through the architecture of your backend?**
+**A:** Our backend is built on [Node.js/Express OR Python/Django/FastAPI] because of its rapid development features and scalability. We followed a Model-View-Controller (MVC) or modular architecture to separate business logic from API routing. The backend exposes RESTful (or GraphQL) APIs that the frontend consumes, and it connects securely to our database to persist data.
+
+**Q2: Why did you choose [SQL vs NoSQL] for your database?**
+**A:** *[If SQL]* We chose a relational database (like PostgreSQL/MySQL) because our data is highly structured and requires strict relationships and ACID compliance (for example, user profiles strongly linked to their orders/transactions).
+*[If NoSQL]* We chose a NoSQL database (like MongoDB) because our data schema is flexible. We needed high write-speeds and the ability to easily store varied JSON documents without being restricted by strict table constraints.
+
+**Q3: How did you secure your application and APIs?**
+**A:** Security was implemented at multiple levels. We use JWT (JSON Web Tokens) or secure sessions for stateless authentication. Passwords are never stored in plain text; they are salted and hashed using bcrypt. I also implemented CORS policies to only allow our specific frontend domain to access the APIs, and added strict input validation/sanitization to prevent SQL injection and Cross-Site Scripting (XSS) attacks.
+
+**Q4: How does your backend handle scalability?**
+**A:** Our backend design is stateless, which means we can easily scale horizontally by spinning up multiple instances of the server behind a load balancer if traffic increases. At the database level, I implemented indexing on frequently queried fields to speed up read operations, and we use pagination for endpoints that return large datasets to prevent server memory overload.
+
+**Q5: What happens if your database or a third-party API goes down?**
+**A:** I implemented robust error handling and try-catch mechanisms. If a third-party API fails, we have a fallback mechanism or we return a graceful, standardized error code (e.g., 503 Service Unavailable) to the frontend rather than letting the server crash. We also have basic logging in place to track these failures so we can debug them later.

@@ -13,7 +13,35 @@ const studentSchema = new mongoose.Schema({
   readinessHistory: [{
     score: { type: Number },
     date: { type: Date, default: Date.now }
-  }]
+  }],
+  // Added fields
+  headline: { type: String },
+  experience: [{
+    company: String,
+    title: String,
+    startDate: Date,
+    endDate: Date,
+    description: String
+  }],
+  education: [{
+    institution: String,
+    degree: String,
+    fieldOfStudy: String,
+    startDate: Date,
+    endDate: Date
+  }],
+  certifications: [String],
+  projects: [{
+    title: String,
+    description: String,
+    link: String
+  }],
+  github: { type: String },
+  linkedin: { type: String },
+  portfolio: { type: String },
+  preferredRoles: [{ type: String }],
+  preferredLocations: [{ type: String }],
+  availability: { type: String }
 });
 
 const Student = User.discriminator('student', studentSchema);

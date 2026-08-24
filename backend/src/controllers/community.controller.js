@@ -36,4 +36,40 @@ const likePost = async (req, res) => {
   return apiResponse(res, 200, true, 'Post liked status updated', post);
 };
 
-module.exports = { getPosts, createPost, likePost };
+const updatePost = async (req, res) => {
+  const { id } = req.params;
+  const { content } = req.body;
+  
+  const post = await Post.findById(id);
+  if (!post) {
+    return apiResponse(res, 404, false, 'Post not found');
+  }
+
+  if (post.author.toString() !== req.user.id) {
+    return apiResponse(res, 403, false, 'Not authorized to edit this post');
+  }
+
+  post.content = content;
+  await post.save();
+  await post.populate('author', 'firstName lastName');
+
+  return apiResponse(res, 200, true, 'Post updated successfully', post);
+};
+
+const deletePost = async (req, res) => {
+  const { id } = req.params;
+  
+  const post = await Post.findById(id);
+  if (!post) {
+    return apiResponse(res, 404, false, 'Post not found');
+  }
+
+  if (post.author.toString() !== req.user.id) {
+    return apiResponse(res, 403, false, 'Not authorized to delete this post');
+  }
+
+  await post.deleteOne();
+  return apiResponse(res, 200, true, 'Post deleted successfully');
+};
+
+module.exports = { getPosts, createPost, likePost, updatePost, deletePost };

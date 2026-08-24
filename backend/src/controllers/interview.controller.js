@@ -1,11 +1,20 @@
 const { getGroqChatCompletion } = require('../ai/llmClient');
 const apiResponse = require('../utils/apiResponse');
+const studentService = require('../services/student.service');
 
 const mockInterviewChat = async (req, res) => {
   const { message, history = [] } = req.body;
+  const studentId = req.user.id;
+
+  const student = await studentService.getProfile(studentId);
+  const targetRoles = student.preferredRoles && student.preferredRoles.length > 0 
+    ? student.preferredRoles.join(', ') 
+    : 'General Software Engineering / Data';
 
   const systemPrompt = `You are an expert AI Technical Interviewer. 
 Your job is to conduct a mock interview with the user.
+The user's target career role(s): ${targetRoles}.
+Tailor all your technical questions to be relevant to these specific roles.
 Guidelines:
 - Ask exactly one interview question at a time.
 - Wait for the user's answer.

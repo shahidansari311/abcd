@@ -1,0 +1,111 @@
+<mxfile host="Electron" modified="2024-03-22T00:00:00.000Z" agent="Mozilla/5.0" version="24.0.4" type="device">
+  <diagram id="sys_arch" name="System Architecture">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ui1" value="Student UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="100" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="ui2" value="Institution UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="200" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="ui3" value="Industry UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="300" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="ui4" value="Academician UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="400" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="auth" value="JWT Auth &amp; RBAC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="300" y="250" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="ctrl" value="API Controllers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="500" y="250" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="sock" value="Socket.io Real-Time" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="500" y="100" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="ai" value="AI Engine (RAG)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="700" y="250" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="groq" value="Groq LLM API" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="900" y="150" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="hf" value="HuggingFace API" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="900" y="350" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="db_users" value="Users/Auth DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="400" y="450" width="100" height="80" as="geometry" /></mxCell>
+        <mxCell id="db_profiles" value="Profiles DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="530" y="450" width="100" height="80" as="geometry" /></mxCell>
+        <mxCell id="db_jobs" value="Jobs DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="660" y="450" width="100" height="80" as="geometry" /></mxCell>
+        <mxCell id="db_vector" value="Vector DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="790" y="450" width="100" height="80" as="geometry" /></mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="ui1" target="auth"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="ui2" target="auth"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="ui3" target="auth"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="ui4" target="auth"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="auth" target="ctrl"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ctrl" target="sock"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ctrl" target="ai"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ai" target="groq"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ai" target="hf"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ctrl" target="db_users"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ctrl" target="db_profiles"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ctrl" target="db_jobs"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="ai" target="db_vector"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ai_workflow" name="AI Matchmaking Workflow">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="w1_1" value="1. Industry Posts Job" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w1_2" value="2. Backend Extract Keywords&#10;(Groq LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="320" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w1_3" value="3. Generate Embeddings&#10;(HuggingFace)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="540" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w1_4" value="4. Store in VectorDB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1"><mxGeometry x="760" y="90" width="100" height="80" as="geometry" /></mxCell>
+        <mxCell id="w1_5" value="5. RAG Engine compares&#10;vs Student Profiles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="540" y="240" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w1_6" value="6. Generate Match Score %" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="320" y="240" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w1_7" value="7. Ranked Kanban Delivery&#10;to Recruiter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="240" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w1_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w1_1" target="w1_2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w1_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w1_2" target="w1_3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w1_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w1_3" target="w1_4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w1_e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w1_4" target="w1_5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w1_e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w1_5" target="w1_6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w1_e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w1_6" target="w1_7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="verif_workflow" name="Verification Workflow">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="w2_1" value="1. Student Adds Skill&#10;+ Evidence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w2_2" value="2. Backend creates&#10;VerificationRequest" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="320" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w2_3" value="3. Validator Receives&#10;Notification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="540" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w2_4" value="4. Validator Reviews&#10;Evidence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1"><mxGeometry x="760" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w2_5" value="5. Approve / Reject" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="790" y="220" width="100" height="100" as="geometry" /></mxCell>
+        <mxCell id="w2_6" value="6. Update Profile:&#10;Skill is Verified" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="540" y="240" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w2_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w2_1" target="w2_2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w2_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w2_2" target="w2_3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w2_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w2_3" target="w2_4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w2_e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w2_4" target="w2_5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w2_e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w2_5" target="w2_6"><mxGeometry relative="1" as="geometry" /><Array as="points"><mxPoint x="840" y="270" /></Array></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="assess_workflow" name="Assessment Workflow">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="w3_1" value="1. Student Selects&#10;Assessment Challenge" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w3_2" value="2. Backend Generates&#10;Dynamic Questions (LLM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="320" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w3_3" value="3. Secure Frontend&#10;Execution (Timed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="540" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w3_4" value="4. Submission Evaluated&#10;by Backend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="760" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w3_5" value="5. Badge Awarded&#10;to Skill Passport" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="760" y="240" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w3_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w3_1" target="w3_2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w3_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w3_2" target="w3_3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w3_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w3_3" target="w3_4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w3_e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w3_4" target="w3_5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="collab_workflow" name="Collaboration Workflow">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="w4_1" value="1. JWT Auth via React" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w4_2" value="2. Establish Socket.io&#10;WebSocket Connection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="320" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w4_3" value="3. Dynamic Room&#10;Assignment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1"><mxGeometry x="540" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w4_4" value="4. User Emits&#10;'message:send'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="760" y="100" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w4_5" value="5. Save to MongoDB &amp;&#10;Broadcast Payload" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1"><mxGeometry x="760" y="240" width="160" height="60" as="geometry" /></mxCell>
+        <mxCell id="w4_e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w4_1" target="w4_2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w4_e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w4_2" target="w4_3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w4_e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w4_3" target="w4_4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="w4_e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="w4_4" target="w4_5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

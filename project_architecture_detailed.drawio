@@ -1,0 +1,461 @@
+<?xml version="1.0" ?>
+<mxfile version="24.0.4">
+  <diagram id="single_page" name="Complete Project Architecture">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="6000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="t1" value="1. Deep System Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="400" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c1" value="Student UI
+(Vite/React)" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c2" value="Industry UI" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="250" y="100" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c3" value="Institution UI" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c4" value="Academician UI" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="650" y="100" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="sec" value="API Gateway &amp; Security Layer
+(Helmet, CORS, Rate-Limit, JWT Middleware)" style="rounded=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="250" y="250" width="460" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c1" target="sec">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c2" target="sec">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c3" target="sec">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_c4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="c4" target="sec">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ct1" value="auth.controller" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="50" y="400" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ct2" value="student.controller" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="250" y="400" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ct3" value="industry.controller" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="450" y="400" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ct4" value="matching.controller" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="650" y="400" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ct5" value="verification.controller" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="850" y="400" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ct6" value="assessment.controller" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="400" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sec1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="sec" target="ct1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sec2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="sec" target="ct2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sec3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="sec" target="ct3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sec4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="sec" target="ct4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sec5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="sec" target="ct5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sec6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="sec" target="ct6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai1" value="ragPipeline.js" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="450" y="550" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai2" value="llmClient.js" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="650" y="550" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ai3" value="embeddingClient.js" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="850" y="550" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ct4_ai1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ct4" target="ai1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ct6_ai2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ct6" target="ai2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ct3_ai3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ct3" target="ai3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext1" value="Groq SDK (LLM)" style="ellipse;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="650" y="700" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext2" value="HuggingFace API" style="ellipse;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="850" y="700" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ai2_ext1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ai2" target="ext1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ai3_ext2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ai3" target="ext2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ai1_ext2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ai1" target="ai3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ai1_ai2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ai1" target="ai2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="db1" value="User.model" style="shape=cylinder3;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="50" y="700" width="100" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="db2" value="SkillProfile.model" style="shape=cylinder3;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="200" y="700" width="100" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="db3" value="Opportunity.model" style="shape=cylinder3;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="350" y="700" width="120" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="db4" value="VerificationReq.model" style="shape=cylinder3;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="500" y="700" width="130" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="db5" value="Vector DB" style="shape=cylinder3;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="700" width="100" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ct1_db1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ct1" target="db1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ct2_db2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ct2" target="db2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ct3_db3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ct3" target="db3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ct5_db4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ct5" target="db4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ai3_db5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ai3" target="db5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2" value="2. Detailed AI Matching &amp; Resume Parsing Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="930" width="400" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_1" value="Student Uploads PDF Resume" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1000" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_2" value="resume.controller.js
+(Multer &amp; pdf-parse)" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1150" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_3" value="llmClient.js (Groq SDK)
+Extract Skills to JSON" style="rounded=1;fillColor=#ffe6cc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1300" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_4" value="Save to SkillProfile.model" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1450" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_5" value="Industry Posts Job" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1000" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_6" value="opportunity.controller" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1150" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_7" value="embeddingClient.js
+(HuggingFace API)" style="rounded=1;fillColor=#ffe6cc;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1300" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_8" value="Save to VectorDB &amp; Opportunity" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="410" y="1450" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_9" value="Recruiter clicks Find Matches" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1000" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_10" value="matching.controller.js" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1150" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_11" value="ragPipeline.js
+Cosine Similarity &amp; Overlap" style="rounded=1;fillColor=#ffe6cc;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1300" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2_12" value="Ranked Students UI
+Kanban Board" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1450" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_1" target="w2_2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_2" target="w2_3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_3" target="w2_4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_5" target="w2_6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_6" target="w2_7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_7" target="w2_8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_9" target="w2_10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_10" target="w2_11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_11" target="w2_12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_8" target="w2_11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_w2_11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="w2_4" target="w2_11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3" value="3. Detailed Verification Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="1730" width="400" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="v1" value="Student submits evidence
+(GitHub/Cert)" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1800" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="v2" value="verification.controller.js" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1800" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="v3" value="VerificationRequest.model
+(Status: Pending)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1790" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="v4" value="Academician/Industry UI
+Receives Socket Alert" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1950" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="v5" value="Validator Approves" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="600" y="2100" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="v6" value="SkillProfile.model
+(Status: Verified)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="350" y="2090" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="v7" value="SkillGraphNode.model
+(Weights Incremented)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="2090" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="v8" value="AuditLog.model
+(Compliance logged)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1950" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="ev1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="v1" target="v2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ev2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="v2" target="v3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ev3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="v3" target="v4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ev4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="v4" target="v5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ev5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="v5" target="v6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ev6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="v6" target="v7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ev7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="v6" target="v8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="t4" value="4. Detailed Assessment Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="2430" width="400" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="a1" value="Student Selects Topic" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="2500" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" value="challenge.controller.js" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="350" y="2500" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="a3" value="llmClient.js (Groq)
+Generates JSON Questions" style="rounded=1;fillColor=#ffe6cc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="2500" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4" value="Challenge.model
+(Save Questions)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="620" y="2650" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="a5" value="Student Takes Test" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="350" y="2660" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="a6" value="assessment.controller.js
+Grades Submission" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="350" y="2800" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="a7" value="AssessmentResult.model" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="620" y="2790" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="a8" value="SkillProfile.model
+(Add Verified Badge)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="2790" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a1" target="a2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a2" target="a3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a3" target="a4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a4" target="a5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a5" target="a6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a6" target="a7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="a6" target="a8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="t5" value="5. Collaboration &amp; Workspace Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="3130" width="400" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="cw1" value="Student UI / Community" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="3200" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="cw2" value="workspace.controller.js
+&amp; messaging.controller.js" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="350" y="3200" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="cw3" value="socket.js
+(WebSocket Connection)" style="rounded=1;fillColor=#ffe6cc;" vertex="1" parent="1">
+          <mxGeometry x="650" y="3200" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="cw4" value="Message.model
+(Save chat logs)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="650" y="3350" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="cw5" value="ProjectWorkspace.model
+(Task/File Sharing)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="350" y="3350" width="180" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="cw6" value="Broadcast to other
+connected clients" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="650" y="3500" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ecw1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="cw1" target="cw2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ecw2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="cw2" target="cw3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ecw3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="cw3" target="cw4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ecw4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="cw2" target="cw5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ecw5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="cw3" target="cw6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="t6" value="6. Application &amp; Interview Pipeline" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="3830" width="400" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="ap1" value="Student applies to Job" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="3900" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ap2" value="application.controller.js" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="350" y="3900" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ap3" value="Application.model
+(Status: Applied)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="3890" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="ap4" value="Recruiter Shortlists" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="850" y="3900" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ap5" value="interview.controller.js
+Schedule Interview" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="850" y="4050" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ap6" value="Notification.model
+Alerts Student" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="4040" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="ap7" value="Application.model
+(Status: Interviewed)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="850" y="4200" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="eap1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ap1" target="ap2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eap2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ap2" target="ap3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eap3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ap3" target="ap4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eap4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ap4" target="ap5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eap5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ap5" target="ap6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="eap6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ap5" target="ap7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="t7" value="7. Institution Analytics Flow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="4530" width="400" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="in1" value="Institution UI
+Requests Dashboard" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="4600" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="in2" value="institution.controller.js" style="rounded=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="350" y="4600" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="in3" value="MongoDB Aggregation
+Pipelines ($group, $match)" style="rounded=1;fillColor=#ffe6cc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="4600" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="in4" value="SkillProfile.model" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="500" y="4750" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="in5" value="AssessmentResult.model" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="750" y="4750" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="in6" value="Institution.model
+(Cohort Data)" style="shape=cylinder3;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="350" y="4750" width="120" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="in7" value="Generate Department-wise
+Skill Heatmap &amp; Stats" style="rounded=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="4900" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ein1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="in1" target="in2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ein2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="in2" target="in3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ein3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="in3" target="in4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ein4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="in3" target="in5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ein5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="in2" target="in6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ein6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="in3" target="in7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -4,6 +4,10 @@ import { Send, User, Bot, Loader2, Target, Route } from "lucide-react";
 import { PageHeader, Card, Button } from "../../components/ui";
 import { fadeUp } from "../../lib/motion";
 import { api } from "../../lib/api";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github.css";
 
 type Message = {
   id: string;
@@ -94,8 +98,19 @@ export default function CareerAgent() {
                 <div className={`grid size-9 shrink-0 place-items-center rounded-full ${m.role === "agent" ? "bg-primary text-white" : "bg-tint text-primary-dark"}`}>
                   {m.role === "agent" ? <Bot size={20} /> : <User size={20} />}
                 </div>
-                <div className={`max-w-[80%] rounded-2xl p-4 text-sm ${m.role === "user" ? "bg-primary text-white rounded-tr-sm" : "bg-surface border border-line text-ink rounded-tl-sm"}`}>
-                  <p className="whitespace-pre-wrap leading-relaxed">{m.content}</p>
+                <div className={`max-w-[80%] rounded-2xl p-4 text-sm ${m.role === "user" ? "bg-primary text-white rounded-tr-sm" : "bg-surface border border-line text-ink rounded-tl-sm markdown-body"}`}>
+                  {m.role === "user" ? (
+                    <p className="whitespace-pre-wrap leading-relaxed">{m.content}</p>
+                  ) : (
+                    <div className="prose prose-sm prose-slate max-w-none">
+                      <ReactMarkdown 
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeHighlight]}
+                      >
+                        {m.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}

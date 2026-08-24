@@ -8,5 +8,7 @@ router.use(auth);
 router.get('/posts', asyncHandler(communityController.getPosts));
 router.post('/posts', asyncHandler(communityController.createPost));
 router.post('/posts/:id/like', asyncHandler(communityController.likePost));
+router.put('/posts/:id', asyncHandler(communityController.updatePost));
+router.delete('/posts/:id', asyncHandler(communityController.deletePost));
 
 module.exports = router;

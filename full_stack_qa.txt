@@ -1,0 +1,16 @@
+# Full Stack Development: Judge Evaluation Q&A
+
+**Q1: Since you handled both frontend and backend, how did you manage your time and prioritize tasks?**
+**A:** I took an API-first approach. I first designed the database schema and agreed on the API contracts. Once the backend endpoints were stubbed out (even returning hardcoded mock data), I could start developing the frontend in parallel. This prevented me from getting blocked on the UI while waiting for complex backend logic or database queries to be finalized.
+
+**Q2: What was the hardest bug you faced across the stack, and how did you resolve it?**
+**A:** The hardest issue was usually a mismatch between the frontend state and the backend expectations. For example, the frontend was sending data in one format, but the backend expected another, causing silent failures. I solved this by implementing strict type-checking across the stack (e.g., using shared TypeScript interfaces) and adding strong request validation middleware on the backend to catch bad payloads instantly.
+
+**Q3: How did you handle deployment for both the frontend and backend?**
+**A:** I decoupled the deployments for better scalability and manageability. The frontend (static assets) is hosted on a CDN-based platform like Vercel or Netlify for fast global delivery. The backend is deployed on a cloud provider like Render, Heroku, or AWS, and it securely connects to a managed cloud database.
+
+**Q4: How did you ensure consistent error handling from the server to the UI?**
+**A:** I created a standardized error response format on the backend—every error returns a JSON object with a `success` boolean, a `message`, and an `errorCode`. On the frontend, I built a global network interceptor (using Axios or Fetch wrappers) that reads this standard format and automatically displays a unified toast notification to the user, ensuring a consistent error experience everywhere in the app.
+
+**Q5: If you had 2 more weeks to work on this, what would you improve in the overall architecture?**
+**A:** On the backend, I would implement a caching layer (using Redis) to reduce database load for our most frequent queries. On the frontend, I would write comprehensive automated tests (using tools like Jest and Cypress) to ensure new features don't break existing functionality. I'd also look into setting up a proper CI/CD pipeline to automate our testing and deployments.

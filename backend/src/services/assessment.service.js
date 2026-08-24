@@ -47,7 +47,7 @@ const submitAssessment = async (studentId, assessmentId, answers) => {
     skillProfile = new SkillProfile({ student: studentId, skills: [] });
   }
 
-  const skillName = assessment.title.replace(' Assessment', '').trim();
+  const skillName = assessment.relatedSkill || assessment.title.replace(' Assessment', '').trim();
   const existingSkillIndex = skillProfile.skills.findIndex(s => s.name === skillName);
   
   const skillData = {

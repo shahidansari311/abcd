@@ -1,0 +1,16 @@
+# UI/UX Design: Judge Evaluation Q&A
+
+**Q1: How did you decide on the color scheme and typography for this project?**
+**A:** I started by understanding the target audience and the core theme of our application. For instance, we chose our primary colors to evoke trust and clarity, which fits our project's goal. I used design tools like Figma to test different palettes and ensured the contrast ratio meets WCAG accessibility standards so that text is easy to read. The typography was chosen specifically for digital readability and to match the brand's personality.
+
+**Q2: Can you explain the user flow you designed?**
+**A:** Our primary goal was to minimize the number of clicks required for a user to achieve their main objective. For example, during the onboarding/signup process, we reduced it to just three simple steps and included social login options. I created low-fidelity wireframes first to map out this journey, tested it for potential bottlenecks, and only then moved to high-fidelity designs.
+
+**Q3: How did you ensure your design is accessible to all users?**
+**A:** Accessibility was a top priority from day one. I ensured high color contrast for all text elements, added clear focus states for keyboard navigation, and designed descriptive labels for screen readers. I also made sure that touch targets (like buttons and links) are large enough and spaced out properly for mobile users to prevent accidental clicks.
+
+**Q4: What was the biggest design challenge you faced, and how did you solve it?**
+**A:** The biggest challenge was fitting complex data and features onto a small mobile screen without overwhelming the user. I solved this by implementing "progressive disclosure"—showing only the most critical information upfront and allowing users to tap or expand sections to see more details if they want to.
+
+**Q5: How did you collaborate with the frontend developers?**
+**A:** I provided the development team with detailed Figma prototypes, which included CSS properties, hover states, animations, and exact spacing guidelines. We had regular syncs to ensure what I designed was technically feasible within our hackathon/project timeframe. I remained flexible and made design adjustments when certain UI elements were too complex to build quickly.

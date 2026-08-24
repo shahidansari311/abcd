@@ -12,6 +12,7 @@ const assessmentSchema = new mongoose.Schema({
   description: { type: String },
   type: { type: String, enum: ['technical', 'aptitude', 'soft_skill', 'behavioral'], required: true },
   targetRole: { type: String },
+  relatedSkill: { type: String },
   durationMinutes: { type: Number },
   questions: [questionSchema],
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
