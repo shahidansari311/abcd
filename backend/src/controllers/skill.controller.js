@@ -33,23 +33,36 @@ const getLeaderboard = async (req, res) => {
     return apiResponse(res, 400, false, 'Skill parameter is required');
   }
 
-  // Find all profiles that have the requested skill
-  const profiles = await SkillProfile.find({ 'skills.name': new RegExp(`^${skill}$`, 'i') })
-    .populate('student', 'firstName lastName institution')
-    .lean();
-
-  // Extract the specific skill and sort
-  const leaderboard = profiles.map(p => {
-    const matchedSkill = p.skills.find(s => s.name.toLowerCase() === skill.toLowerCase());
-    return {
-      student: p.student,
-      score: matchedSkill ? matchedSkill.score : 0,
-      confidence: matchedSkill ? matchedSkill.confidence : 0,
-      isVerified: matchedSkill ? matchedSkill.isVerified : false,
-    };
-  })
-  .sort((a, b) => b.score - a.score)
-  .slice(0, 100); // Top 100
+  // Aggregation for scalable leaderboard
+  const leaderboard = await SkillProfile.aggregate([
+    { $unwind: "$skills" },
+    { $match: { "skills.name": new RegExp(`^${skill}$`, 'i') } },
+    { $sort: { "skills.score": -1 } },
+    { $limit: 100 },
+    {
+      $lookup: {
+        from: "users",
+        localField: "student",
+        foreignField: "_id",
+        as: "studentInfo"
+      }
+    },
+    { $unwind: "$studentInfo" },
+    {
+      $project: {
+        _id: 0,
+        student: {
+          _id: "$studentInfo._id",
+          firstName: "$studentInfo.firstName",
+          lastName: "$studentInfo.lastName",
+          institution: "$studentInfo.institution"
+        },
+        score: "$skills.score",
+        confidence: "$skills.confidence",
+        isVerified: "$skills.isVerified"
+      }
+    }
+  ]);
 
   return apiResponse(res, 200, true, `Leaderboard for ${skill}`, leaderboard);
 };

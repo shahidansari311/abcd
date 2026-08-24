@@ -40,7 +40,8 @@ Student Profile:
 Guidelines:
 - Keep answers concise and encouraging.
 - Recommend specific next steps (e.g. learning a missing skill, doing a project to verify a skill).
-- If they ask about a role, compare their skills to what's typically required.`;
+- If they ask about a role, compare their skills to what's typically required.
+- **IMPORTANT**: Format your response using clean Markdown. Use headings, bullet points, bold text for emphasis, and code blocks for any code examples. Do NOT output raw unformatted text.`;
 
   const messages = [
     { role: 'system', content: systemPrompt },

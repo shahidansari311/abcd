@@ -1,0 +1,16 @@
+# Backend AI-Focused: Judge Evaluation Q&A
+
+**Q1: Which AI model did you choose and why?**
+**A:** We integrated [OpenAI GPT-4 / Google Gemini / Anthropic Claude / a local Hugging Face model]. I chose this specific model because it offers the best balance of context window size, reasoning capabilities, and API response speed for our specific use case. It allowed us to accurately process user inputs while keeping costs and latency within acceptable limits.
+
+**Q2: How did you handle the latency issues that usually come with AI API calls?**
+**A:** Large Language Model generation can be slow. Instead of making the user stare at a loading spinner for 10 seconds waiting for a massive text payload, I implemented Server-Sent Events (SSE) or WebSockets. This allows us to stream the AI's response token-by-token directly to the frontend, giving the user immediate visual feedback and a much better experience.
+
+**Q3: How did you write your prompts to ensure accurate and safe responses? (Prompt Engineering)**
+**A:** I used strict system prompts that clearly define the persona, tone, and constraints of the AI. I utilized "few-shot prompting" by providing examples within the prompt to guide the model into outputting exactly the format we need (like strict JSON). For safety, the prompt explicitly instructs the model to refuse to answer queries that fall outside the scope of our application.
+
+**Q4: How do you handle "hallucinations" (when the AI makes things up)?**
+**A:** To minimize hallucinations, we implemented a RAG (Retrieval-Augmented Generation) pipeline. Instead of relying on the model's internal, potentially outdated knowledge, our backend first queries our own vector database for factual documents. We then inject that verified context into the prompt, and the AI is strictly instructed to generate answers *only* based on the provided context.
+
+**Q5: How did you manage data privacy when sending user data to an external AI API?**
+**A:** Data privacy is critical. Before sending any user prompts to the external AI API, the backend scrubs or masks PII (Personally Identifiable Information) like names, emails, and phone numbers. Furthermore, we verified that the API provider's enterprise agreement states that our data is not used to train their public models.
