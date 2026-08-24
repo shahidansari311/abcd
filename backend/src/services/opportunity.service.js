@@ -22,8 +22,17 @@ const getAllOpportunities = async () => {
   return Opportunity.find({ status: 'open' }).populate('industryPartner', 'companyName').sort({ createdAt: -1 });
 };
 
+const updateOpportunityStatus = async (opportunityId, industryPartnerId, status) => {
+  return Opportunity.findOneAndUpdate(
+    { _id: opportunityId, industryPartner: industryPartnerId },
+    { status },
+    { new: true }
+  );
+};
+
 module.exports = {
   createOpportunity,
   getOpportunitiesForIndustry,
   getAllOpportunities,
+  updateOpportunityStatus,
 };

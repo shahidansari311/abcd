@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const verificationRequestSchema = new mongoose.Schema({
   student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
-  academician: { type: mongoose.Schema.Types.ObjectId, ref: 'Academician', required: true },
+  academician: { type: mongoose.Schema.Types.ObjectId, ref: 'Academician' },
+  industry: { type: mongoose.Schema.Types.ObjectId, ref: 'Industry' },
   skillRef: { type: mongoose.Schema.Types.ObjectId, required: true }, // Points to a specific skill inside the student's SkillProfile
   skillName: { type: String, required: true },
   evidenceUrl: { type: String },

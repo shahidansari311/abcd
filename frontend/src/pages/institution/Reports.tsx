@@ -12,28 +12,24 @@ const templates = [
     icon: <TrendingUp size={20} />,
     title: "Placement Report",
     description: "Offers, packages, and placement rate across departments and years.",
-    lastGenerated: "Aug 12, 2026",
   },
   {
     key: "skillgap",
     icon: <Layers size={20} />,
     title: "Skill Gap Report",
     description: "Competency gaps mapped against current industry demand signals.",
-    lastGenerated: "Aug 05, 2026",
   },
   {
     key: "department",
     icon: <Users size={20} />,
     title: "Department Performance",
     description: "Readiness, participation, and outcomes broken down by department.",
-    lastGenerated: "Jul 28, 2026",
   },
   {
     key: "partner",
     icon: <Handshake size={20} />,
     title: "Partner Engagement",
     description: "Hiring activity, MOU status, and collaboration health per partner.",
-    lastGenerated: "Jul 19, 2026",
   },
 ];
 
@@ -82,8 +78,7 @@ export default function Reports() {
                         </span>
                         <h3 className="font-semibold text-ink">{t.title}</h3>
                       </div>
-                      <p className="mb-4 flex-1 text-sm text-ink-soft">{t.description}</p>
-                      <p className="mb-4 text-xs text-ink-soft">Last generated: {t.lastGenerated}</p>
+                      <p className="mb-6 flex-1 text-sm text-ink-soft">{t.description}</p>
                       <div className="flex gap-2">
                         <Button size="sm" className="flex-1">
                           <RefreshCw size={16} /> Generate
@@ -135,7 +130,7 @@ export default function Reports() {
                 <Badge tone="accent">{dept === "All departments" ? "All" : dept}</Badge>
               </div>
               <p className="mb-4 text-sm text-ink-soft">Placement readiness by department</p>
-              <BarList data={previewData} />
+              <BarList data={dept === "All departments" ? previewData : previewData.filter(d => d.label === dept)} />
             </Card>
           </motion.div>
         </div>

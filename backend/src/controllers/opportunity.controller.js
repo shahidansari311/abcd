@@ -16,8 +16,25 @@ const getAllOpportunities = async (req, res) => {
   return apiResponse(res, 200, true, 'Opportunities fetched successfully', opportunities);
 };
 
+const updateStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  
+  if (!['Open', 'Paused', 'Closed'].includes(status)) {
+    return apiResponse(res, 400, false, 'Invalid status');
+  }
+
+  const opportunity = await opportunityService.updateOpportunityStatus(id, req.user.id, status);
+  if (!opportunity) {
+    return apiResponse(res, 404, false, 'Opportunity not found or you do not have permission');
+  }
+
+  return apiResponse(res, 200, true, 'Status updated successfully', opportunity);
+};
+
 module.exports = {
   createOpportunity,
   getMyOpportunities,
   getAllOpportunities,
+  updateStatus,
 };

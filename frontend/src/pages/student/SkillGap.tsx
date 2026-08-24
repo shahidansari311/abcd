@@ -1,33 +1,15 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Plus, BookOpen, Video, FileText } from "lucide-react";
 import { PageHeader, Card, Button, Badge, Grid, GridItem } from "../../components/ui";
-import { RadarChart, BarList } from "../../components/charts";
+import { BarList, RadarChart } from "../../components/charts";
 import { fadeUp } from "../../lib/motion";
+import { api } from "../../lib/api";
 
-const you = [
-  { label: "Python", value: 82 },
-  { label: "SQL", value: 76 },
-  { label: "ML", value: 45 },
-  { label: "Statistics", value: 58 },
-  { label: "Comm.", value: 84 },
-  { label: "Cloud", value: 38 },
-];
-
-const target = [
-  { label: "Python", value: 85 },
-  { label: "SQL", value: 80 },
-  { label: "ML", value: 80 },
-  { label: "Statistics", value: 78 },
-  { label: "Comm.", value: 75 },
-  { label: "Cloud", value: 70 },
-];
-
-const gaps = [
-  { label: "Machine Learning", value: 35 },
-  { label: "Cloud (AWS)", value: 32 },
-  { label: "Statistics", value: 20 },
-  { label: "SQL", value: 4 },
-];
+type GapAnalysis = {
+  skill: string;
+  gap: number;
+};
 
 const resources = [
   { title: "Machine Learning Crash Course", type: "Course", icon: BookOpen, gap: "Machine Learning", hours: 20 },
@@ -36,11 +18,36 @@ const resources = [
 ];
 
 export default function SkillGap() {
+  const [targetRole, setTargetRole] = useState("Loading...");
+  const [radarData, setRadarData] = useState([]);
+  const [detailedGaps, setDetailedGaps] = useState<GapAnalysis[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGaps = async () => {
+      try {
+        const res = await api.get("/student/skill-gap");
+        if (res) {
+          setTargetRole(res.targetRole);
+          setRadarData(res.radarData);
+          setDetailedGaps(res.detailedAnalysis.filter((g: any) => g.gap > 0));
+        }
+      } catch (err) {
+        console.error("Failed to load skill gaps", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGaps();
+  }, []);
+
+  if (loading) return <div className="p-8 text-center text-ink-soft">Loading skill gaps...</div>;
+
   return (
     <div>
       <PageHeader
         title="Skill gap analysis"
-        subtitle="See exactly what stands between you and your target role: Data Scientist."
+        subtitle={`See exactly what stands between you and your target role: ${targetRole}.`}
       />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -48,20 +55,9 @@ export default function SkillGap() {
           <Card className="h-full">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-semibold text-ink">You vs. Target role</h3>
-              <div className="flex gap-3 text-xs">
-                <span className="inline-flex items-center gap-1.5 text-ink-soft"><span className="size-2.5 rounded-full bg-primary" /> You</span>
-                <span className="inline-flex items-center gap-1.5 text-ink-soft"><span className="size-2.5 rounded-full bg-accent" /> Target</span>
-              </div>
             </div>
-            <div className="grid place-items-center gap-4 sm:grid-cols-2">
-              <div className="text-center">
-                <p className="mb-1 text-sm font-medium text-primary">You</p>
-                <RadarChart data={you} size={200} />
-              </div>
-              <div className="text-center">
-                <p className="mb-1 text-sm font-medium text-accent">Target role</p>
-                <RadarChart data={target} size={200} />
-              </div>
+            <div className="h-[300px]">
+              <RadarChart data={radarData} />
             </div>
           </Card>
         </motion.div>
@@ -70,7 +66,7 @@ export default function SkillGap() {
           <Card className="h-full">
             <h3 className="mb-1 font-semibold text-ink">Top gaps to close</h3>
             <p className="mb-4 text-sm text-ink-soft">Point difference between you and the target profile.</p>
-            <BarList data={gaps} />
+            <BarList data={detailedGaps.map(g => ({ label: g.skill, value: g.gap }))} />
           </Card>
         </motion.div>
       </div>

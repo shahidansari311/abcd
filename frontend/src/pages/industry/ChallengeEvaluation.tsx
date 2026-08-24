@@ -1,93 +1,62 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
-import { PageHeader, Card, Badge, Avatar, Button } from "../../components/ui";
-import { BarList } from "../../components/charts";
-import { fadeUp, stagger } from "../../lib/motion";
-
-const submissions = [
-  { name: "Amara Okafor", challenge: "Sentiment Model Optimization", submitted: "Aug 18, 2026", auto: 92 },
-  { name: "Daniel Reyes", challenge: "ETL Pipeline Design", submitted: "Aug 17, 2026", auto: 85 },
-  { name: "Priya Nair", challenge: "Accessible Dashboard Build", submitted: "Aug 15, 2026", auto: 78 },
-];
-
-const rubric = ["Correctness", "Code quality", "Performance", "Documentation"];
-
-function ScorePanel() {
-  const [scores, setScores] = useState<number[]>([80, 75, 70, 85]);
-  const data = rubric.map((label, i) => ({ label, value: scores[i] }));
-  const overall = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-
-  return (
-    <div className="mt-4 rounded-xl border border-line bg-bg p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm font-semibold text-ink">Score submission</p>
-        <Badge tone="accent">Overall {overall}</Badge>
-      </div>
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <div className="space-y-4">
-          {rubric.map((label, i) => (
-            <div key={label}>
-              <div className="mb-1 flex justify-between text-sm">
-                <span className="font-medium text-ink">{label}</span>
-                <span className="text-ink-soft">{scores[i]}</span>
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={scores[i]}
-                onChange={(e) => {
-                  const next = [...scores];
-                  next[i] = Number(e.target.value);
-                  setScores(next);
-                }}
-                className="w-full accent-primary"
-              />
-            </div>
-          ))}
-        </div>
-        <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-soft">Rubric breakdown</p>
-          <BarList data={data} />
-        </div>
-      </div>
-      <div className="mt-5 flex gap-2">
-        <Button variant="secondary" size="sm">
-          <Check size={15} /> Approve
-        </Button>
-        <Button variant="danger" size="sm">
-          <X size={15} /> Reject
-        </Button>
-      </div>
-    </div>
-  );
-}
+import { Rocket, Clock, Wrench } from "lucide-react";
+import { PageHeader, Card } from "../../components/ui";
+import { fadeUp } from "../../lib/motion";
 
 export default function ChallengeEvaluation() {
   return (
     <div>
-      <PageHeader title="Challenge Evaluation" subtitle="Review and score candidate submissions" />
+      <PageHeader
+        title="Challenge Evaluation"
+        subtitle="Review and score candidate submissions"
+      />
 
-      <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
-        {submissions.map((s) => (
-          <motion.div key={s.name} variants={fadeUp}>
-            <Card>
-              <div className="flex flex-wrap items-center gap-4">
-                <Avatar name={s.name} size={48} />
-                <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-ink">{s.name}</p>
-                  <p className="text-sm text-ink-soft">{s.challenge}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-ink-soft">Submitted {s.submitted}</p>
-                  <Badge tone={s.auto >= 85 ? "primary" : "warning"}>Auto-score {s.auto}</Badge>
-                </div>
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="show"
+        className="flex justify-center py-10"
+      >
+        <Card className="max-w-lg w-full text-center">
+          <div className="mx-auto mb-6 grid size-20 place-items-center rounded-2xl bg-primary/10">
+            <Rocket size={40} className="text-primary" />
+          </div>
+
+          <h2 className="text-2xl font-bold text-ink">Coming Soon</h2>
+          <p className="mt-3 text-sm text-ink-soft leading-relaxed">
+            Challenge evaluation with automated scoring, rubric-based manual review,
+            and submission management is currently in development.
+          </p>
+
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 text-left">
+            <div className="rounded-xl border border-line bg-surface p-4 flex items-start gap-3">
+              <div className="mt-0.5 grid size-9 place-items-center rounded-lg bg-primary/10 text-primary">
+                <Clock size={18} />
               </div>
-              <ScorePanel />
-            </Card>
-          </motion.div>
-        ))}
+              <div>
+                <p className="text-sm font-semibold text-ink">Auto-Scoring</p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  AI-powered evaluation of submissions based on correctness and performance.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-xl border border-line bg-surface p-4 flex items-start gap-3">
+              <div className="mt-0.5 grid size-9 place-items-center rounded-lg bg-accent/10 text-accent">
+                <Wrench size={18} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-ink">Rubric Review</p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  Manual scoring with customisable rubrics for code quality, docs and more.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-8 text-xs text-ink-soft">
+            We'll notify you when this feature goes live.
+          </p>
+        </Card>
       </motion.div>
     </div>
   );

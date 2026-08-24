@@ -13,7 +13,7 @@ const skillEntrySchema = new mongoose.Schema({
 });
 
 const skillProfileSchema = new mongoose.Schema({
-  student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true, unique: true },
+  student: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   skills: [skillEntrySchema],
   lastRecomputedAt: { type: Date, default: Date.now },
 }, { timestamps: true });

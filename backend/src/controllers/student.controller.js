@@ -2,6 +2,9 @@ const studentService = require('../services/student.service');
 const apiResponse = require('../utils/apiResponse');
 const { getGroqChatCompletion } = require('../ai/llmClient');
 const SkillProfile = require('../models/SkillProfile.model');
+const Opportunity = require('../models/Opportunity.model');
+const Student = require('../models/Student.model');
+const momentumService = require('../services/momentum.service');
 
 const getProfile = async (req, res) => {
   const student = await studentService.getProfile(req.user.id);
@@ -84,7 +87,12 @@ const simulateReadiness = async (req, res) => {
 
 const generateRoadmap = async (req, res) => {
   const studentId = req.user.id;
-  const student = await studentService.getProfile(studentId);
+  const student = await Student.findById(studentId);
+  
+  if (student.careerRoadmap && student.careerRoadmap.length > 0) {
+    return apiResponse(res, 200, true, 'Roadmap fetched from profile', student.careerRoadmap);
+  }
+
   const skillProfile = await SkillProfile.findOne({ student: studentId });
 
   const skillsContext = skillProfile && skillProfile.skills.length > 0 
@@ -92,24 +100,31 @@ const generateRoadmap = async (req, res) => {
     : 'No skills added yet.';
 
   const systemPrompt = `You are an expert AI Career Advisor for ${student.firstName}. 
-Generate a JSON array of exact 5 career milestones for them to reach a Data Scientist or related role.
+Generate a JSON object with a single key "roadmap" containing an array of exact 5 career milestones for them to reach a Data Scientist or related role.
 Their current skills: ${skillsContext}.
-Return ONLY a valid JSON array of objects with the exact structure:
-[
-  { "title": "Milestone Name", "status": "done" | "current" | "upcoming", "desc": "Brief 1-sentence description" }
-]
-At least one should be "current". Prioritize what they are lacking.`;
+Return ONLY a valid JSON object with the exact structure:
+{
+  "roadmap": [
+    { "title": "Milestone Name", "status": "done" | "current" | "upcoming", "desc": "Brief 1-sentence description" }
+  ]
+}
+At least one milestone should be "current". Prioritize what they are lacking.`;
 
   try {
-    const aiResponse = await getGroqChatCompletion([{ role: 'system', content: systemPrompt }]);
-    const replyText = aiResponse.choices[0]?.message?.content || "[]";
-    const jsonMatch = replyText.match(/\[.*\]/s);
-    let milestones = [];
-    if (jsonMatch) {
-      milestones = JSON.parse(jsonMatch[0]);
-    } else {
-      milestones = JSON.parse(replyText);
-    }
+    const aiResponse = await getGroqChatCompletion(
+      [{ role: 'system', content: systemPrompt }], 
+      { response_format: { type: 'json_object' } }
+    );
+    const replyText = aiResponse.choices[0]?.message?.content || '{"roadmap": []}';
+    const parsedData = JSON.parse(replyText);
+    const milestones = parsedData.roadmap || [];
+    
+    student.careerRoadmap = milestones;
+    student.targetRole = "Data Scientist";
+    await student.save();
+
+    await momentumService.addMomentum(studentId, 50); // Big boost for setting a roadmap
+
     return apiResponse(res, 200, true, 'Roadmap generated', milestones);
   } catch (err) {
     console.error("Groq Error (Roadmap):", err);
@@ -121,8 +136,118 @@ At least one should be "current". Prioritize what they are lacking.`;
       { title: "Interviews", status: "upcoming", desc: "Prepare for mock interviews." },
       { title: "Job Offer", status: "upcoming", desc: "Land your target role." }
     ];
+    
+    student.careerRoadmap = fallback;
+    student.targetRole = "Data Scientist";
+    await student.save();
+    
+    await momentumService.addMomentum(studentId, 50);
+
     return apiResponse(res, 200, true, 'Roadmap generated', fallback);
   }
+};
+
+const getSkillGap = async (req, res) => {
+  const studentId = req.user.id;
+  const skillProfile = await SkillProfile.findOne({ student: studentId }).lean();
+  const opportunities = await Opportunity.find({ isActive: true }).lean();
+
+  const industryDemand = {};
+  opportunities.forEach(opp => {
+    opp.requiredSkills.forEach(reqSkill => {
+      if (!industryDemand[reqSkill.skillName]) {
+        industryDemand[reqSkill.skillName] = { maxRequired: 0, count: 0 };
+      }
+      if (reqSkill.minimumScore > industryDemand[reqSkill.skillName].maxRequired) {
+        industryDemand[reqSkill.skillName].maxRequired = reqSkill.minimumScore;
+      }
+      industryDemand[reqSkill.skillName].count += 1;
+    });
+  });
+
+  const studentSkills = {};
+  if (skillProfile && skillProfile.skills) {
+    skillProfile.skills.forEach(s => {
+      studentSkills[s.name] = s.score;
+    });
+  }
+
+  const analysis = [];
+  let overallGap = 0;
+  let gapCount = 0;
+
+  for (const skillName in industryDemand) {
+    const required = industryDemand[skillName].maxRequired;
+    const current = studentSkills[skillName] || 0;
+    
+    analysis.push({
+      skill: skillName,
+      current,
+      required,
+      gap: Math.max(0, required - current)
+    });
+
+    if (required > current) {
+      overallGap += (required - current);
+      gapCount += 1;
+    }
+  }
+
+  // Sort by gap size
+  analysis.sort((a, b) => b.gap - a.gap);
+  
+  // Format the radar data for the frontend
+  const radarData = analysis.slice(0, 6).map(item => ({
+    subject: item.skill,
+    A: item.current,
+    B: item.required,
+    fullMark: 100
+  }));
+
+  // Find top missing skills
+  const targetRole = opportunities.length > 0 ? opportunities[0].title : "Data Scientist";
+
+  return apiResponse(res, 200, true, 'Skill gap fetched', {
+    targetRole,
+    radarData: radarData.length > 0 ? radarData : [
+      { subject: "Python", A: 0, B: 80, fullMark: 100 },
+      { subject: "SQL", A: 0, B: 75, fullMark: 100 }
+    ],
+    detailedAnalysis: analysis.length > 0 ? analysis : [
+      { skill: "Python", current: 0, required: 80, gap: 80 }
+    ]
+  });
+};
+
+const getPassport = async (req, res) => {
+  const studentId = req.user.id;
+  const skillProfile = await SkillProfile.findOne({ student: studentId }).lean();
+  
+  const verifications = [];
+  if (skillProfile && skillProfile.skills) {
+    skillProfile.skills.filter(s => s.isVerified).forEach(s => {
+      verifications.push({
+        id: s._id || Math.random().toString(),
+        skill: s.name,
+        issuer: "Industry Partner",
+        date: s.updatedAt || new Date(),
+        type: "Assessment",
+        score: s.score
+      });
+    });
+  }
+
+  return apiResponse(res, 200, true, 'Passport fetched', {
+    address: "0x" + studentId.substring(0, 10).padEnd(40, '0'), // Mock crypto address based on ID
+    verifications: verifications.length > 0 ? verifications : [
+      { id: "1", skill: "Platform Onboarding", issuer: "SkillBridge", date: new Date(), type: "System", score: 100 }
+    ]
+  });
+};
+
+const getMomentum = async (req, res) => {
+  const data = await momentumService.getMomentum(req.user.id);
+  return apiResponse(res, 200, true, 'Momentum fetched', data);
 };
 
 module.exports = {
@@ -131,4 +256,7 @@ module.exports = {
   chatWithAgent,
   simulateReadiness,
   generateRoadmap,
+  getSkillGap,
+  getPassport,
+  getMomentum,
 };

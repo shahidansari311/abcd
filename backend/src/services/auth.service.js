@@ -40,7 +40,7 @@ const registerUser = async (userData) => {
     case 'academician':
       user = await Academician.create({ ...baseData, ...rest });
       break;
-    case 'institution_admin':
+    case 'institution':
       user = await Institution.create({ ...baseData, ...rest, isVerified: false });
       break;
     default:

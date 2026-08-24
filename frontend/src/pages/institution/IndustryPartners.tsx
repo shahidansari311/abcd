@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
-import { Briefcase, Check } from "lucide-react";
+import { Briefcase, Check, X } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, Avatar, Badge, Button } from "../../components/ui";
 import { fadeUp, stagger } from "../../lib/motion";
 import { api } from "../../lib/api";
 
 interface Partner {
+  id: string;
   name: string;
   sector: string;
   roles: string[] | number;
@@ -20,7 +22,9 @@ const mouTone: Record<NonNullable<Partner["mou"]>, "primary" | "warning" | "tint
 };
 
 export default function IndustryPartners() {
+  const navigate = useNavigate();
   const [data, setData] = useState<{ partners: Partner[], requests: Partner[] }>({ partners: [], requests: [] });
+  const [actioned, setActioned] = useState<Record<string, 'approved' | 'rejected'>>({});
 
   useEffect(() => {
     async function loadData() {
@@ -33,6 +37,10 @@ export default function IndustryPartners() {
     }
     loadData();
   }, []);
+
+  const handleAction = (name: string, action: 'approved' | 'rejected') => {
+    setActioned(prev => ({ ...prev, [name]: action }));
+  };
 
   return (
     <div>
@@ -85,20 +93,34 @@ export default function IndustryPartners() {
               <p className="py-4 text-center text-sm text-ink-soft">No pending requests.</p>
             ) : (
               data.requests.map((req) => (
-                <div key={req.name} className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar name={req.name} size={32} />
-                    <div>
-                      <p className="font-medium text-ink">{req.name}</p>
-                      <p className="text-sm text-ink-soft">{req.sector} - {req.roles} roles proposed</p>
-                    </div>
+              <div key={req.name} className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <Avatar name={req.name} size={32} />
+                  <div>
+                    <p className="font-medium text-ink">{req.name}</p>
+                    <p className="text-sm text-ink-soft">{req.sector} - {req.roles} roles proposed</p>
                   </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline">Review</Button>
-                  <Button size="sm">
-                    <Check size={16} /> Approve
-                  </Button>
                 </div>
+                {actioned[req.name] ? (
+                  <Badge tone={actioned[req.name] === 'approved' ? 'primary' : 'warning'}>
+                    {actioned[req.name] === 'approved' ? '✓ Approved' : '✕ Rejected'}
+                  </Badge>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" onClick={() => navigate(`/institution/partners/${req.id}`)}>
+                      Review
+                    </Button>
+                    <Button size="sm" variant="outline"
+                      onClick={() => handleAction(req.name, 'rejected')}
+                      className="border-error/40 text-error hover:bg-error/10"
+                    >
+                      <X size={16} /> Reject
+                    </Button>
+                    <Button size="sm" onClick={() => handleAction(req.name, 'approved')}>
+                      <Check size={16} /> Approve
+                    </Button>
+                  </div>
+                )}
               </div>
             ))
           )}

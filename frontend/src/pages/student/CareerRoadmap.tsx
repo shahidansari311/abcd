@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Check, Target, Loader2 } from "lucide-react";
+import { Check, Target, Loader2, Zap } from "lucide-react";
 import { PageHeader, Card, Badge, ProgressBar } from "../../components/ui";
 import { stagger, fadeUp } from "../../lib/motion";
 import { api } from "../../lib/api";
@@ -36,16 +36,19 @@ export default function CareerRoadmap() {
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [loading, setLoading] = useState(true);
   const [readiness, setReadiness] = useState(0);
+  const [momentum, setMomentum] = useState<any>(null);
 
   useEffect(() => {
     async function init() {
       try {
-        const [roadmapRes, profileRes] = await Promise.all([
+        const [roadmapRes, profileRes, momentumRes] = await Promise.all([
           api.get("/student/roadmap"),
-          api.get("/student/profile")
+          api.get("/student/profile"),
+          api.get("/student/momentum").catch(() => null)
         ]);
         setMilestones(roadmapRes || []);
-        setReadiness(profileRes.readinessScore || 0);
+        setReadiness(profileRes?.student?.readinessScore || 0);
+        if (momentumRes) setMomentum(momentumRes);
       } catch (err) {
         console.error(err);
       } finally {
@@ -58,6 +61,20 @@ export default function CareerRoadmap() {
   return (
     <div>
       <PageHeader title="Career roadmap" subtitle="Your personalized path from student to professional." />
+
+      {momentum?.multiplier > 1 && (
+        <motion.div variants={fadeUp} initial="hidden" animate="show">
+          <div className="mb-6 rounded-2xl bg-gradient-to-r from-orange-500/20 to-orange-400/10 border border-orange-500/20 p-4 flex items-center gap-4">
+            <div className="bg-orange-500 text-white rounded-full p-2">
+              <Zap size={20} />
+            </div>
+            <div>
+              <p className="font-semibold text-orange-600 dark:text-orange-400">Roadmap Accelerated!</p>
+              <p className="text-sm text-ink-soft">Your high learning speed has earned you a {momentum.multiplier}x boost. You are projected to hit your target role ahead of schedule.</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       <motion.div variants={fadeUp} initial="hidden" animate="show">
         <Card className="mb-8 flex items-center gap-4 bg-tint">

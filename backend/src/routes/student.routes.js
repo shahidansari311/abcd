@@ -23,6 +23,10 @@ const interviewController = require('../controllers/interview.controller');
 
 router.post('/simulate-readiness', asyncHandler(studentController.simulateReadiness));
 router.get('/roadmap', asyncHandler(studentController.generateRoadmap));
+router.get('/skill-gap', asyncHandler(studentController.getSkillGap));
+router.get('/passport', asyncHandler(studentController.getPassport));
+router.get('/momentum', asyncHandler(studentController.getMomentum));
+
 router.post('/resume-analyze', upload.single('resume'), asyncHandler(resumeController.analyzeResume));
 router.post('/mock-interview/chat', asyncHandler(interviewController.mockInterviewChat));
 

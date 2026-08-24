@@ -9,8 +9,10 @@ const validate = (schema) => (req, res, next) => {
     });
     next();
   } catch (err) {
-    // Assuming Zod error structure
-    const errorMessage = err.errors.map(e => e.message).join(', ');
+    // Handle Zod validation errors (.errors array) or any other thrown error
+    const errorMessage = Array.isArray(err.errors)
+      ? err.errors.map(e => e.message).join(', ')
+      : err.message || 'Validation failed';
     next(new ApiError(400, `Validation Error: ${errorMessage}`));
   }
 };

@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { motion } from "framer-motion";
 import { MessageSquare, UserPlus, ShieldCheck } from "lucide-react";
 import { PageHeader, Card, Badge, Avatar, Button } from "../../components/ui";
 import { CompatibilityScore, RadarChart } from "../../components/charts";
 import { fadeUp, stagger } from "../../lib/motion";
+import { api } from "../../lib/api";
 
 const skills = [
   { label: "Python", value: 95 },
@@ -28,19 +30,44 @@ const experience = [
 
 export default function CandidateDetail() {
   const { id } = useParams();
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id) {
+      api.get(`/industry/candidates/${id}`)
+        .then(setProfile)
+        .catch(console.error)
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
+
+  if (loading) return <div className="p-8 text-center text-ink-soft">Loading candidate profile...</div>;
+  if (!profile) return <div className="p-8 text-center text-ink-soft">Candidate not found</div>;
+
+  const studentName = `${profile.student?.firstName} ${profile.student?.lastName}`;
+  const skillsData = profile.skills?.map((s: any) => ({
+    subject: s.name,
+    A: s.score,
+    B: 80, // Target score placeholder
+    fullMark: 100
+  })) || [];
+
+  const verifiedSkills = profile.skills?.filter((s: any) => s.isVerified) || [];
 
   return (
     <div>
-      <PageHeader title="Candidate Profile" subtitle={`Candidate #${id ?? "1"}`} />
+      <PageHeader title="Candidate Profile" subtitle={`Candidate ID: ${id}`} />
 
       <motion.div variants={fadeUp} initial="hidden" animate="show">
         <Card className="flex flex-wrap items-center gap-5">
-          <Avatar name="Amara Okafor" size={72} />
+          <Avatar name={studentName} size={72} />
           <div className="min-w-0 flex-1">
-            <h2 className="text-2xl font-bold text-ink">Amara Okafor</h2>
-            <p className="text-ink-soft">ML Researcher • Stanford University</p>
+            <h2 className="text-2xl font-bold text-ink">{studentName}</h2>
+            <p className="text-ink-soft">{profile.student?.major || "Major Undefined"} • {profile.student?.graduationYear || "Year Undefined"}</p>
+            <p className="mt-1 text-sm">{profile.student?.bio}</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              <Badge tone="accent">Open to internships</Badge>
+              <Badge tone="accent">Available</Badge>
               <Badge tone="tint">Remote</Badge>
             </div>
           </div>
@@ -66,7 +93,9 @@ export default function CandidateDetail() {
         <motion.div variants={fadeUp} initial="hidden" animate="show" className="lg:col-span-2">
           <Card className="flex flex-col items-center">
             <h3 className="mb-2 self-start text-lg font-semibold text-ink">Skills profile</h3>
-            <RadarChart data={skills} />
+            <div className="h-[300px] w-full">
+              {skillsData.length > 0 ? <RadarChart data={skillsData} /> : <p className="text-sm text-ink-soft">No skills data.</p>}
+            </div>
           </Card>
         </motion.div>
       </div>
@@ -74,20 +103,22 @@ export default function CandidateDetail() {
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <motion.div variants={fadeUp} initial="hidden" animate="show">
           <Card>
-            <h3 className="mb-4 text-lg font-semibold text-ink">Verified credentials</h3>
+            <h3 className="mb-4 text-lg font-semibold text-ink">Verified skills</h3>
             <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
-              {credentials.map((c) => (
+              {verifiedSkills.length > 0 ? verifiedSkills.map((c: any) => (
                 <motion.div key={c.name} variants={fadeUp} className="flex items-center gap-3 rounded-xl border border-line bg-bg p-3">
                   <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-tint text-primary">
                     <ShieldCheck size={18} />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold text-ink">{c.name}</p>
-                    <p className="truncate text-sm text-ink-soft">{c.issuer}</p>
+                    <p className="truncate text-sm text-ink-soft">Score: {c.score}</p>
                   </div>
                   <Badge tone="primary">Verified</Badge>
                 </motion.div>
-              ))}
+              )) : (
+                <p className="text-sm text-ink-soft">No verified skills yet.</p>
+              )}
             </motion.div>
           </Card>
         </motion.div>

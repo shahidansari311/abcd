@@ -12,7 +12,13 @@ const createWorkspace = async (userId, data) => {
 };
 
 const getMyWorkspaces = async (userId) => {
-  return ProjectWorkspace.find({ members: userId }).populate('members', 'firstName lastName email role');
+  return ProjectWorkspace.find({ members: userId })
+    .populate('members', 'firstName lastName email role')
+    .populate({
+      path: 'opportunity',
+      select: 'title industryPartner',
+      populate: { path: 'industryPartner', select: 'companyName' }
+    });
 };
 
 const getWorkspaceById = async (userId, workspaceId) => {

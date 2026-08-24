@@ -16,8 +16,17 @@ const getPendingRequestsForAcademician = async (academicianId) => {
     .sort({ createdAt: -1 });
 };
 
-const processVerification = async (requestId, academicianId, status, notes) => {
-  const request = await VerificationRequest.findOne({ _id: requestId, academician: academicianId });
+const getPendingRequestsForIndustry = async (industryId) => {
+  return VerificationRequest.find({ industry: industryId, status: 'pending' })
+    .populate('student', 'email firstName lastName')
+    .sort({ createdAt: -1 });
+};
+
+const processVerification = async (requestId, reviewerId, status, notes) => {
+  const request = await VerificationRequest.findOne({ 
+    _id: requestId, 
+    $or: [{ academician: reviewerId }, { industry: reviewerId }]
+  });
   if (!request) {
     throw new ApiError(404, 'Verification request not found or not assigned to you');
   }
@@ -51,5 +60,6 @@ const processVerification = async (requestId, academicianId, status, notes) => {
 module.exports = {
   createVerificationRequest,
   getPendingRequestsForAcademician,
+  getPendingRequestsForIndustry,
   processVerification,
 };

@@ -1,35 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, Award, RotateCw } from "lucide-react";
-import { PageHeader, Card, Badge, Grid, GridItem } from "../../components/ui";
+import { ShieldCheck, Share2, Download, Copy, Award, RotateCw, Activity, Hash, Layers } from "lucide-react";
+import { PageHeader, Card, Badge, Button } from "../../components/ui";
+import { api } from "../../lib/api";
 
-const credentials = [
-  { name: "SQL Fundamentals", issuer: "Northwind Academy", date: "Mar 2026", id: "SB-SQL-8842" },
-  { name: "Python for Data", issuer: "SkillBridge", date: "Jan 2026", id: "SB-PY-1203" },
-  { name: "Intro to Statistics", issuer: "Delta University", date: "Nov 2025", id: "SB-ST-4471" },
-  { name: "Data Visualization", issuer: "Tableau Learning", date: "Feb 2026", id: "SB-VIZ-6690" },
-  { name: "Agile Foundations", issuer: "SkillBridge", date: "Dec 2025", id: "SB-AGL-3355" },
-  { name: "Communication Pro", issuer: "Delta University", date: "Oct 2025", id: "SB-COM-2018" },
-];
+type Verification = {
+  id: string;
+  skill: string;
+  issuer: string;
+  date: string;
+  type: string;
+  score: number;
+};
 
 export default function SkillPassport() {
+  const [address, setAddress] = useState("Loading...");
+  const [verifications, setVerifications] = useState<Verification[]>([]);
+  const [loading, setLoading] = useState(true);
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const fetchPassport = async () => {
+      try {
+        const res = await api.get("/student/passport");
+        if (res) {
+          setAddress(res.address);
+          setVerifications(res.verifications);
+        }
+      } catch (err) {
+        console.error("Failed to load passport", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPassport();
+  }, []);
 
   const toggle = (id: string) => setFlipped((f) => ({ ...f, [id]: !f[id] }));
 
+  if (loading) return <div className="p-8 text-center text-ink-soft">Loading passport...</div>;
+
   return (
     <div>
-      <PageHeader
-        title="Skill passport"
-        subtitle="Your portable, verifiable wallet of earned credentials."
-      />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-8">
+        <PageHeader title="Skill Passport" subtitle="Your cryptographically verifiable record of skills and achievements" className="mb-0" />
+        <div className="flex gap-3">
+          <Button variant="outline" size="sm" icon={<Share2 size={16} />}>Share Profile</Button>
+          <Button variant="primary" size="sm" icon={<Download size={16} />}>Export PDF</Button>
+        </div>
+      </div>
 
-      <Grid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {credentials.map((c) => {
-          const isFlipped = !!flipped[c.id];
+      <div className="mb-8 rounded-2xl bg-slate-900 p-6 text-white shadow-xl">
+        <p className="text-sm text-slate-400">Wallet Address</p>
+        <div className="mt-2 flex items-center gap-3">
+          <p className="font-mono text-sm">{address}</p>
+          <button className="text-slate-500 transition-colors hover:text-white" aria-label="Copy address">
+            <Copy size={16} />
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {verifications.map((v) => {
+          const isFlipped = !!flipped[v.id];
           return (
-            <GridItem key={c.id}>
-              <button onClick={() => toggle(c.id)} className="block w-full text-left">
+            <div key={v.id}>
+              <button onClick={() => toggle(v.id)} className="block w-full text-left">
                 <Card hover className="relative min-h-44">
                   <AnimatePresence mode="wait" initial={false}>
                     {!isFlipped ? (
@@ -46,8 +82,12 @@ export default function SkillPassport() {
                           </div>
                           <RotateCw size={16} className="text-ink-soft" />
                         </div>
-                        <h3 className="mt-4 font-semibold text-ink">{c.name}</h3>
-                        <p className="text-sm text-ink-soft">{c.issuer}</p>
+                        <h3 className="mt-4 font-semibold text-ink">{v.skill}</h3>
+                        <div className="mt-1 flex items-center gap-2 text-xs text-ink-soft">
+                          <span>{v.issuer}</span>
+                          <span className="size-1 rounded-full bg-line" />
+                          <span>{new Date(v.date).toLocaleDateString()}</span>
+                        </div>
                         <p className="mt-6 text-xs text-ink-soft">Tap to verify</p>
                       </motion.div>
                     ) : (
@@ -64,15 +104,15 @@ export default function SkillPassport() {
                         <dl className="mt-4 space-y-2 text-sm">
                           <div className="flex justify-between">
                             <dt className="text-ink-soft">Issuer</dt>
-                            <dd className="font-medium text-ink">{c.issuer}</dd>
+                            <dd className="font-medium text-ink">{v.issuer}</dd>
                           </div>
                           <div className="flex justify-between">
-                            <dt className="text-ink-soft">Issued</dt>
-                            <dd className="font-medium text-ink">{c.date}</dd>
+                            <dt className="text-ink-soft">Score</dt>
+                            <dd className="font-medium text-ink">{v.score}%</dd>
                           </div>
                           <div className="flex justify-between">
                             <dt className="text-ink-soft">Credential ID</dt>
-                            <dd className="font-mono text-xs text-ink">{c.id}</dd>
+                            <dd className="font-mono text-xs text-ink">{v.id}</dd>
                           </div>
                         </dl>
                         <p className="mt-4 text-xs text-ink-soft">Tap to flip back</p>
@@ -81,10 +121,10 @@ export default function SkillPassport() {
                   </AnimatePresence>
                 </Card>
               </button>
-            </GridItem>
+            </div>
           );
         })}
-      </Grid>
+      </div>
     </div>
   );
 }

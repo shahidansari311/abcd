@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
-import { Target, Briefcase, ShieldCheck, Route, ArrowRight, CheckCircle2, Circle, Loader } from "lucide-react";
+import { Target, Briefcase, ShieldCheck, Route, ArrowRight, CheckCircle2, Circle, Loader, Flame, Shield } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, StatCard, Button, Badge } from "../../components/ui";
 import { RadarChart, TrendChart, CompatibilityScore } from "../../components/charts";
 import CountUp from "../../components/CountUp";
@@ -22,19 +22,22 @@ export default function Dashboard() {
   const [student, setStudent] = useState<any>(null);
   const [skills, setSkills] = useState<any[]>([]);
   const [opportunities, setOpportunities] = useState<any[]>([]);
+  const [momentum, setMomentum] = useState<any>(null);
 
   useEffect(() => {
     async function fetchDashboardData() {
       try {
-        const [studentRes, skillRes, oppRes] = await Promise.all([
+        const [studentRes, skillRes, oppRes, momentumRes] = await Promise.all([
           api.get("/student/profile").catch(() => null),
           api.get("/skill/profile").catch(() => null),
           api.get("/student/opportunities").catch(() => null),
+          api.get("/student/momentum").catch(() => null),
         ]);
 
         if (studentRes?.student) setStudent(studentRes.student);
         if (skillRes?.skills) setSkills(skillRes.skills);
         if (oppRes) setOpportunities(oppRes.slice(0, 3)); // Only show top 3
+        if (momentumRes) setMomentum(momentumRes);
       } catch (err) {
         console.error("Dashboard data load failed", err);
       } finally {
@@ -82,7 +85,12 @@ export default function Dashboard() {
           <StatCard label="Skill readiness" value={<CountUp to={readinessScore} suffix="%" />} delta="+6% this month" icon={<Target size={18} />} />
         </GridItem>
         <GridItem>
-          <StatCard label="Applications" value={<CountUp to={0} />} delta="0 active" icon={<Briefcase size={18} />} />
+          <StatCard 
+            label="Career Momentum" 
+            value={<div className="flex items-center gap-1"><CountUp to={momentum?.streak || 0} /><Flame size={24} className="text-orange-500 animate-pulse" /></div>} 
+            delta={momentum?.multiplier > 1 ? `${momentum.multiplier}x Hot Streak!` : `${Math.round(((momentum?.progress || 0) / (momentum?.goal || 1)) * 100)}% this week`} 
+            icon={<Shield size={18} className={momentum?.shields > 0 ? "text-primary" : "text-ink-soft"} />} 
+          />
         </GridItem>
         <GridItem>
           <StatCard label="Credentials" value={<CountUp to={verifiedCount} />} delta="Verified skills" icon={<ShieldCheck size={18} />} />

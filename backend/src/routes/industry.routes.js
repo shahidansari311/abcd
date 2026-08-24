@@ -13,4 +13,12 @@ router.route('/profile')
   .get(asyncHandler(industryController.getProfile))
   .put(asyncHandler(industryController.updateProfile));
 
+router.get('/dashboard', asyncHandler(industryController.getDashboardStats));
+router.get('/pipeline', asyncHandler(industryController.getPipeline));
+router.put('/pipeline/:id/status', asyncHandler(industryController.updatePipelineStatus));
+router.get('/candidates', asyncHandler(industryController.searchCandidates));
+router.get('/candidates/:id', asyncHandler(industryController.getCandidateById));
+router.get('/analytics', asyncHandler(industryController.getAnalytics));
+
 module.exports = router;
+

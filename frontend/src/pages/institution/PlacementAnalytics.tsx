@@ -9,6 +9,7 @@ import { api } from "../../lib/api";
 
 export default function PlacementAnalytics() {
   const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
@@ -17,26 +18,57 @@ export default function PlacementAnalytics() {
         setData(res);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
     loadData();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-20">
+        <div className="size-10 animate-spin rounded-full border-4 border-line border-t-primary" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <PageHeader title="Placement Analytics" subtitle="Outcomes, packages, and funnel performance" />
 
       <Grid className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <GridItem>
-          <StatCard label="Median package" value={<CountUp to={12} prefix="₹" suffix=" LPA" />} delta="+1.5 LPA" icon={<IndianRupee size={20} />} />
+          <StatCard
+            label="Median package"
+            value={<CountUp to={data?.medianPackage || 0} prefix="₹" suffix=" LPA" />}
+            delta="From placed students"
+            icon={<IndianRupee size={20} />}
+          />
         </GridItem>
         <GridItem>
-          <StatCard label="Highest package" value={<CountUp to={54} prefix="₹" suffix=" LPA" />} delta="Record high" icon={<Award size={20} />} />
+          <StatCard
+            label="Highest package"
+            value={<CountUp to={data?.highestPackage || 0} prefix="₹" suffix=" LPA" />}
+            delta="Top offer this cycle"
+            icon={<Award size={20} />}
+          />
         </GridItem>
         <GridItem>
-          <StatCard label="Offers extended" value={<CountUp to={533} />} delta="+72 YoY" icon={<FileCheck size={20} />} />
+          <StatCard
+            label="Offers extended"
+            value={<CountUp to={data?.offersExtended || 0} />}
+            delta="Offer + Hired status"
+            icon={<FileCheck size={20} />}
+          />
         </GridItem>
         <GridItem>
-          <StatCard label="Companies visited" value={<CountUp to={126} />} delta="+18 new" icon={<Building size={20} />} />
+          <StatCard
+            label="Companies visited"
+            value={<CountUp to={data?.companiesVisited || 0} />}
+            delta="Unique recruiters"
+            icon={<Building size={20} />}
+          />
         </GridItem>
       </Grid>
 
@@ -45,7 +77,7 @@ export default function PlacementAnalytics() {
           <Card>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-ink">Placement rate trend</h2>
-              <Badge tone="accent">% placed</Badge>
+              <Badge tone="accent">Hires per month</Badge>
             </div>
             <TrendChart data={data?.placementTrend || []} />
           </Card>
@@ -54,7 +86,11 @@ export default function PlacementAnalytics() {
         <motion.div variants={fadeUp} initial="hidden" animate="show">
           <Card>
             <h2 className="mb-4 text-lg font-semibold text-ink">Offers by sector</h2>
-            <BarList data={data?.offersBySector || []} />
+            {data?.offersBySector?.length > 0 ? (
+              <BarList data={data.offersBySector} />
+            ) : (
+              <p className="py-6 text-center text-sm text-ink-soft">No offers data yet.</p>
+            )}
           </Card>
         </motion.div>
       </div>
@@ -63,18 +99,29 @@ export default function PlacementAnalytics() {
         <Card>
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-ink">Placement funnel</h2>
-            <Badge tone="primary">Conversion 48%</Badge>
+            {data?.funnel && data.funnel.length > 0 && (
+              <Badge tone="primary">
+                Placed: {data.funnel.find((s: any) => s.label === "Placed")?.value || 0}
+              </Badge>
+            )}
           </div>
           <div className="space-y-5">
-            {data?.funnel?.map((step: any) => (
-              <div key={step.label}>
-                <div className="mb-1.5 flex items-center justify-between text-sm">
-                  <span className="font-medium text-ink">{step.label}</span>
-                  <span className="text-ink-soft">{step.value}%</span>
+            {data?.funnel?.map((step: any) => {
+              const maxVal = Math.max(...(data.funnel.map((s: any) => s.value) || [1]), 1);
+              const pct = Math.round((step.value / maxVal) * 100);
+              return (
+                <div key={step.label}>
+                  <div className="mb-1.5 flex items-center justify-between text-sm">
+                    <span className="font-medium text-ink">{step.label}</span>
+                    <span className="text-ink-soft">{step.value} students</span>
+                  </div>
+                  <ProgressBar value={pct} />
                 </div>
-                <ProgressBar value={step.value} />
-              </div>
-            ))}
+              );
+            })}
+            {(!data?.funnel || data.funnel.length === 0) && (
+              <p className="py-6 text-center text-sm text-ink-soft">No placement data yet.</p>
+            )}
           </div>
         </Card>
       </motion.div>
