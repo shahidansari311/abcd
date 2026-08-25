@@ -7,7 +7,7 @@ const groq = new Groq({
 
 /**
  * Real LLM Client using Groq
- * Model: llama3-8b-8192
+ * Model: openai/gpt-oss-20b
  */
 const generateCompletion = async (prompt, options = {}) => {
   if (!env.GROQ_API_KEY) {
@@ -40,7 +40,7 @@ const generateCompletion = async (prompt, options = {}) => {
           content: prompt
         }
       ],
-      model: 'llama3-8b-8192',
+      model: 'openai/gpt-oss-20b',
       temperature: 0.7,
       max_tokens: 1024,
       response_format: prompt.includes('roadmap') ? { type: 'json_object' } : { type: 'text' }
@@ -62,7 +62,7 @@ const getGroqChatCompletion = async (messages, options = {}) => {
   }
   return groq.chat.completions.create({
     messages,
-    model: 'llama3-8b-8192',
+    model: 'openai/gpt-oss-20b',
     temperature: 0.7,
     max_tokens: 1024,
     ...options
