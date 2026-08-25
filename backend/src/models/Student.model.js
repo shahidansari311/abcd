@@ -43,7 +43,7 @@ const studentSchema = new mongoose.Schema({
   portfolio: { type: String },
   preferredRoles: [{ type: String }],
   preferredLocations: [{ type: String }],
-  availability: { type: String }
+  availability: { type: String },
   targetRole: { type: String },
   careerRoadmap: [{
     title: { type: String },

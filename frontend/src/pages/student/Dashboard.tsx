@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
-import { Target, Briefcase, ShieldCheck, Route as RouteIcon, ArrowRight, CheckCircle2, Circle, Loader } from "lucide-react";
-import { Target, Briefcase, ShieldCheck, Route, ArrowRight, CheckCircle2, Circle, Loader, Flame, Shield } from "lucide-react";
+import { Target, Briefcase, ShieldCheck, Route as RouteIcon, ArrowRight, CheckCircle2, Circle, Loader, Flame, Shield } from "lucide-react";
 import { PageHeader, Card, Grid, GridItem, StatCard, Button, Badge } from "../../components/ui";
 import { RadarChart, TrendChart, CompatibilityScore } from "../../components/charts";
 import CountUp from "../../components/CountUp";
@@ -23,12 +22,13 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchDashboardData() {
       try {
-        const [studentRes, skillRes, oppRes, appsRes, roadmapRes] = await Promise.allSettled([
+        const [studentRes, skillRes, oppRes, appsRes, roadmapRes, momentumRes] = await Promise.allSettled([
           api.get("/student/profile"),
           api.get("/skill/profile"),
           api.get("/student/opportunities"),
           api.get("/applications"),
           api.get("/student/roadmap"),
+          api.get("/student/momentum"),
         ]);
 
         if (studentRes.status === "fulfilled" && studentRes.value?.student) setStudent(studentRes.value.student);
@@ -36,17 +36,7 @@ export default function Dashboard() {
         if (oppRes.status === "fulfilled" && oppRes.value) setOpportunities(oppRes.value.slice(0, 3));
         if (appsRes.status === "fulfilled" && appsRes.value) setApplications(appsRes.value);
         if (roadmapRes.status === "fulfilled" && roadmapRes.value) setMilestones(roadmapRes.value);
-        const [studentRes, skillRes, oppRes, momentumRes] = await Promise.all([
-          api.get("/student/profile").catch(() => null),
-          api.get("/skill/profile").catch(() => null),
-          api.get("/student/opportunities").catch(() => null),
-          api.get("/student/momentum").catch(() => null),
-        ]);
-
-        if (studentRes?.student) setStudent(studentRes.student);
-        if (skillRes?.skills) setSkills(skillRes.skills);
-        if (oppRes) setOpportunities(oppRes.slice(0, 3)); // Only show top 3
-        if (momentumRes) setMomentum(momentumRes);
+        if (momentumRes.status === "fulfilled" && momentumRes.value) setMomentum(momentumRes.value);
       } catch (err) {
         console.error("Dashboard data load failed", err);
       } finally {
